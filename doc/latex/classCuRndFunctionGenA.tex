@@ -1,0 +1,156 @@
+\section{Cu\+Rnd\+Function\+GenA Class Reference}
+\label{classCuRndFunctionGenA}\index{CuRndFunctionGenA@{CuRndFunctionGenA}}
+
+
+{\ttfamily \#include $<$cuhdbfunctiongena.\+h$>$}
+
+
+
+Inheritance diagram for Cu\+Rnd\+Function\+GenA\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classCuRndFunctionGenA__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ Type} \{ \textbf{ HdbF}, 
+\textbf{ SinF}, 
+\textbf{ From\+J\+S\+FileF}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+Rnd\+Function\+GenA} ()
+\item 
+virtual \textbf{ $\sim$\+Cu\+Rnd\+Function\+GenA} ()
+\item 
+virtual \textbf{ Type} \textbf{ get\+Type} () const =0
+\item 
+virtual void \textbf{ configure} (const Cu\+Data \&options)=0
+\item 
+virtual void \textbf{ generate} (Cu\+Data \&res)=0
+\item 
+void \textbf{ extract\+Conf} (const Cu\+Data \&res) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+Rnd\+F\+Data} $\ast$ \textbf{ data}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Enumeration Documentation}
+\mbox{\label{classCuRndFunctionGenA_ac64a414bfa74ea4ddfc1cc82ceefe3f0}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!Type@{Type}}
+\index{Type@{Type}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{Type}
+{\footnotesize\ttfamily enum \textbf{ Cu\+Rnd\+Function\+Gen\+A\+::\+Type}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{HdbF@{HdbF}!CuRndFunctionGenA@{CuRndFunctionGenA}}\index{CuRndFunctionGenA@{CuRndFunctionGenA}!HdbF@{HdbF}}}\mbox{\label{classCuRndFunctionGenA_ac64a414bfa74ea4ddfc1cc82ceefe3f0a2b738161bd2e033e306ef815e0ad29e3}} 
+HdbF&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{SinF@{SinF}!CuRndFunctionGenA@{CuRndFunctionGenA}}\index{CuRndFunctionGenA@{CuRndFunctionGenA}!SinF@{SinF}}}\mbox{\label{classCuRndFunctionGenA_ac64a414bfa74ea4ddfc1cc82ceefe3f0ababbbc3bb7b873bf7554d43b7fd429f6}} 
+SinF&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{FromJSFileF@{FromJSFileF}!CuRndFunctionGenA@{CuRndFunctionGenA}}\index{CuRndFunctionGenA@{CuRndFunctionGenA}!FromJSFileF@{FromJSFileF}}}\mbox{\label{classCuRndFunctionGenA_ac64a414bfa74ea4ddfc1cc82ceefe3f0ad7494188174d3306c2d05ce59123d865}} 
+From\+J\+S\+FileF&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuRndFunctionGenA_a419e272c180e4d92646a9ce7204efda1}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{CuRndFunctionGenA()}
+{\footnotesize\ttfamily Cu\+Rnd\+Function\+Gen\+A\+::\+Cu\+Rnd\+Function\+GenA (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+References data.
+
+\mbox{\label{classCuRndFunctionGenA_aa2d4fd51e2dcb90e6c8436056950fa58}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!````~CuRndFunctionGenA@{$\sim$CuRndFunctionGenA}}
+\index{````~CuRndFunctionGenA@{$\sim$CuRndFunctionGenA}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{$\sim$CuRndFunctionGenA()}
+{\footnotesize\ttfamily Cu\+Rnd\+Function\+Gen\+A\+::$\sim$\+Cu\+Rnd\+Function\+GenA (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+References data.
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{classCuRndFunctionGenA_a0a51f42cbb2a01e29584685fed75d0de}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!configure@{configure}}
+\index{configure@{configure}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{configure()}
+{\footnotesize\ttfamily virtual void Cu\+Rnd\+Function\+Gen\+A\+::configure (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{options }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Rnd\+Js\+Function\+Gen} \doxyref{}{p.}{classCuRndJsFunctionGen_ae8146842d732e21043e9819b5601f46d}, \textbf{ Cu\+Rnd\+Sin\+Function\+Gen} \doxyref{}{p.}{classCuRndSinFunctionGen_af25408d3f8050eb6585a0c2a7628b758}, and \textbf{ Cu\+Rnd\+Hdb\+Function\+Gen} \doxyref{}{p.}{classCuRndHdbFunctionGen_a0afa82d3eaf91d2d58654b1e28e30472}.
+
+\mbox{\label{classCuRndFunctionGenA_acf50f298343a3ccb53ac4f2d33809dc3}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!extractConf@{extractConf}}
+\index{extractConf@{extractConf}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{extractConf()}
+{\footnotesize\ttfamily void Cu\+Rnd\+Function\+Gen\+A\+::extract\+Conf (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{res }\end{DoxyParamCaption}) const}
+
+
+
+References data, Cu\+Rnd\+F\+Data\+::max, Cu\+Rnd\+F\+Data\+::min, and Cu\+Rnd\+F\+Data\+::size.
+
+
+
+Referenced by Cu\+Rnd\+Hdb\+Function\+Gen\+::configure(), Cu\+Rnd\+Sin\+Function\+Gen\+::configure(), and Cu\+Rnd\+Js\+Function\+Gen\+::configure().
+
+\mbox{\label{classCuRndFunctionGenA_a7f9b13c9c2fba07fe63b6f48bf58dd4d}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!generate@{generate}}
+\index{generate@{generate}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{generate()}
+{\footnotesize\ttfamily virtual void Cu\+Rnd\+Function\+Gen\+A\+::generate (\begin{DoxyParamCaption}\item[{Cu\+Data \&}]{res }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Rnd\+Js\+Function\+Gen} \doxyref{}{p.}{classCuRndJsFunctionGen_a535531f0a6ae1f29a6be932f81c30864}, \textbf{ Cu\+Rnd\+Sin\+Function\+Gen} \doxyref{}{p.}{classCuRndSinFunctionGen_af559cd66dc2d0b1ef7c7db356cc1bf8b}, and \textbf{ Cu\+Rnd\+Hdb\+Function\+Gen} \doxyref{}{p.}{classCuRndHdbFunctionGen_a035fed28e09a8471914826f0f69c2ef3}.
+
+\mbox{\label{classCuRndFunctionGenA_a6cac08ae3ef89abe47e2baf0fb0cb13a}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!getType@{getType}}
+\index{getType@{getType}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{getType()}
+{\footnotesize\ttfamily virtual \textbf{ Type} Cu\+Rnd\+Function\+Gen\+A\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Implemented in \textbf{ Cu\+Rnd\+Js\+Function\+Gen} \doxyref{}{p.}{classCuRndJsFunctionGen_a90835ecd841b746890bb3f90b9351340}, \textbf{ Cu\+Rnd\+Sin\+Function\+Gen} \doxyref{}{p.}{classCuRndSinFunctionGen_aadf095707088b27c4cd579e3b1e106ed}, and \textbf{ Cu\+Rnd\+Hdb\+Function\+Gen} \doxyref{}{p.}{classCuRndHdbFunctionGen_a237cc4b59c30e142eca555b6b3002ce1}.
+
+
+
+\subsection{Member Data Documentation}
+\mbox{\label{classCuRndFunctionGenA_a1d0b86d2034719fab04e17108f3f207e}} 
+\index{CuRndFunctionGenA@{CuRndFunctionGenA}!data@{data}}
+\index{data@{data}!CuRndFunctionGenA@{CuRndFunctionGenA}}
+\subsubsection{data}
+{\footnotesize\ttfamily \textbf{ Cu\+Rnd\+F\+Data}$\ast$ Cu\+Rnd\+Function\+Gen\+A\+::data\hspace{0.3cm}{\ttfamily [protected]}}
+
+
+
+Referenced by Cu\+Rnd\+Function\+Gen\+A(), extract\+Conf(), Cu\+Rnd\+Hdb\+Function\+Gen\+::generate(), Cu\+Rnd\+Sin\+Function\+Gen\+::generate(), and $\sim$\+Cu\+Rnd\+Function\+Gen\+A().
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cuhdbfunctiongena.\+h}\item 
+\textbf{ cuhdbfunctiongena.\+cpp}\end{DoxyCompactItemize}

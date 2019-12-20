@@ -1,0 +1,372 @@
+\section{Cu\+R\+N\+D\+ActionI Class Reference}
+\label{classCuHdbActionI}\index{CuHdbActionI@{CuHdbActionI}}
+
+
+{\ttfamily \#include $<$cuhdbactioni.\+h$>$}
+
+
+
+Inheritance diagram for Cu\+R\+N\+D\+ActionI\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=187pt]{classCuHdbActionI__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ Type} \{ \newline
+\textbf{ Reader} = 0, 
+\textbf{ Writer}, 
+\textbf{ Att\+Config}, 
+\textbf{ Db\+Read\+Prop}, 
+\newline
+\textbf{ Db\+Write\+Prop}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+R\+N\+D\+ActionI} ()
+\item 
+virtual \textbf{ $\sim$\+Cu\+R\+N\+D\+ActionI} ()
+\begin{DoxyCompactList}\small\item\em virtual destructor, to make compilers happy \end{DoxyCompactList}\item 
+virtual \textbf{ R\+N\+D\+Source} \textbf{ get\+Source} () const =0
+\begin{DoxyCompactList}\small\item\em return a \doxyref{R\+N\+D\+Source}{p.}{classHdbSource} object that stores information about the Tango source \end{DoxyCompactList}\item 
+virtual \textbf{ Type} \textbf{ get\+Type} () const =0
+\begin{DoxyCompactList}\small\item\em returns the type of \doxyref{Cu\+R\+N\+D\+ActionI}{p.}{classCuHdbActionI} implemented \end{DoxyCompactList}\item 
+virtual void \textbf{ add\+Data\+Listener} (Cu\+Data\+Listener $\ast$l)=0
+\begin{DoxyCompactList}\small\item\em insert a Cu\+Data\+Listener to the list of listeners of data updates \end{DoxyCompactList}\item 
+virtual void \textbf{ remove\+Data\+Listener} (Cu\+Data\+Listener $\ast$l)=0
+\begin{DoxyCompactList}\small\item\em remove a Cu\+Data\+Listener from the list of listeners of data updates \end{DoxyCompactList}\item 
+virtual size\+\_\+t \textbf{ data\+Listeners\+Count} ()=0
+\begin{DoxyCompactList}\small\item\em return the number of registered data listeners \end{DoxyCompactList}\item 
+virtual void \textbf{ start} ()=0
+\begin{DoxyCompactList}\small\item\em the method where activities are created and registered \end{DoxyCompactList}\item 
+virtual void \textbf{ stop} ()=0
+\begin{DoxyCompactList}\small\item\em the method where activities are unregistered from Cumbia \end{DoxyCompactList}\item 
+virtual void \textbf{ send\+Data} (const Cu\+Data \&data)=0
+\begin{DoxyCompactList}\small\item\em subclasses will implement the necessary code to set data on themselves or to the activities \end{DoxyCompactList}\item 
+virtual void \textbf{ get\+Data} (Cu\+Data \&d\+\_\+inout) const =0
+\begin{DoxyCompactList}\small\item\em subclasses will implement the necessary code to analyze the request stored in the input argument and fill it in with output data \end{DoxyCompactList}\item 
+virtual bool \textbf{ exiting} () const =0
+\begin{DoxyCompactList}\small\item\em returns true if the action has been stopped and it\textquotesingle{}s exiting \end{DoxyCompactList}\item 
+virtual void \textbf{ on\+Progress} (int step, int total, const Cu\+Data \&data)
+\item 
+virtual void \textbf{ on\+Result} (const Cu\+Data \&data)
+\item 
+virtual void \textbf{ on\+Result} (const std\+::vector$<$ Cu\+Data $>$ \&datalist)
+\item 
+virtual Cu\+Data \textbf{ get\+Token} () const
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Enumeration Documentation}
+\mbox{\label{classCuHdbActionI_a9776acc7e31aa8950a308ffbf160077d}} 
+\index{CuHdbActionI@{CuHdbActionI}!Type@{Type}}
+\index{Type@{Type}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{Type}
+{\footnotesize\ttfamily enum \textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Reader@{Reader}!CuHdbActionI@{CuHdbActionI}}\index{CuHdbActionI@{CuHdbActionI}!Reader@{Reader}}}\mbox{\label{classCuHdbActionI_a9776acc7e31aa8950a308ffbf160077da5d238a9e9b7c87685443e8ca8236725d}} 
+Reader&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{Writer@{Writer}!CuHdbActionI@{CuHdbActionI}}\index{CuHdbActionI@{CuHdbActionI}!Writer@{Writer}}}\mbox{\label{classCuHdbActionI_a9776acc7e31aa8950a308ffbf160077da55eb798561be5a200ddbd363cac757bf}} 
+Writer&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{AttConfig@{AttConfig}!CuHdbActionI@{CuHdbActionI}}\index{CuHdbActionI@{CuHdbActionI}!AttConfig@{AttConfig}}}\mbox{\label{classCuHdbActionI_a9776acc7e31aa8950a308ffbf160077da322130842813bb36b56efcc5c8e99deb}} 
+Att\+Config&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DbReadProp@{DbReadProp}!CuHdbActionI@{CuHdbActionI}}\index{CuHdbActionI@{CuHdbActionI}!DbReadProp@{DbReadProp}}}\mbox{\label{classCuHdbActionI_a9776acc7e31aa8950a308ffbf160077daceb6237539ae1d87f6c53ed0ca66a366}} 
+Db\+Read\+Prop&\\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{DbWriteProp@{DbWriteProp}!CuHdbActionI@{CuHdbActionI}}\index{CuHdbActionI@{CuHdbActionI}!DbWriteProp@{DbWriteProp}}}\mbox{\label{classCuHdbActionI_a9776acc7e31aa8950a308ffbf160077da10cdff52b2cf73f8d9e7f5d2ab98af99}} 
+Db\+Write\+Prop&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuHdbActionI_ac71a948f8f46831c64af6e2e523048a6}} 
+\index{CuHdbActionI@{CuHdbActionI}!CuHdbActionI@{CuHdbActionI}}
+\index{CuHdbActionI@{CuHdbActionI}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{CuHdbActionI()}
+{\footnotesize\ttfamily Cu\+R\+N\+D\+Action\+I\+::\+Cu\+R\+N\+D\+ActionI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\label{classCuHdbActionI_a4d98eb8c49f733b84b3ec34ccb6ff211}} 
+\index{CuHdbActionI@{CuHdbActionI}!````~CuHdbActionI@{$\sim$CuHdbActionI}}
+\index{````~CuHdbActionI@{$\sim$CuHdbActionI}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{$\sim$CuHdbActionI()}
+{\footnotesize\ttfamily virtual Cu\+R\+N\+D\+Action\+I\+::$\sim$\+Cu\+R\+N\+D\+ActionI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+
+
+virtual destructor, to make compilers happy 
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{classCuHdbActionI_a1ffdbcef2384ec6286fc4d32f13f27f8}} 
+\index{CuHdbActionI@{CuHdbActionI}!addDataListener@{addDataListener}}
+\index{addDataListener@{addDataListener}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{addDataListener()}
+{\footnotesize\ttfamily virtual void Cu\+R\+N\+D\+Action\+I\+::add\+Data\+Listener (\begin{DoxyParamCaption}\item[{Cu\+Data\+Listener $\ast$}]{l }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+insert a Cu\+Data\+Listener to the list of listeners of data updates 
+
+
+\begin{DoxyParams}{Parameters}
+{\em l} & a Cu\+Data\+Listener that receives notifications when data is ready, through Cu\+Data\+Listener\+::on\+Update \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a9194b0afa86896bd309a1f6ab72bc376}.
+
+
+
+Referenced by Cumbia\+Hdb\+::add\+Action().
+
+\mbox{\label{classCuHdbActionI_a1a6f7c1d41820936c23701450058a574}} 
+\index{CuHdbActionI@{CuHdbActionI}!dataListenersCount@{dataListenersCount}}
+\index{dataListenersCount@{dataListenersCount}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{dataListenersCount()}
+{\footnotesize\ttfamily virtual size\+\_\+t Cu\+R\+N\+D\+Action\+I\+::data\+Listeners\+Count (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+return the number of registered data listeners 
+
+\begin{DoxyReturn}{Returns}
+the number of data listeners currently installed 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_ad218c50909d47d5327a13b0c812615ee}.
+
+\mbox{\label{classCuHdbActionI_ab46088db669f92cf08b5f508c466f0ac}} 
+\index{CuHdbActionI@{CuHdbActionI}!exiting@{exiting}}
+\index{exiting@{exiting}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{exiting()}
+{\footnotesize\ttfamily virtual bool Cu\+R\+N\+D\+Action\+I\+::exiting (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+returns true if the action has been stopped and it\textquotesingle{}s exiting 
+
+\begin{DoxyReturn}{Returns}
+true if the action is exiting (normally, stop has been called), false otherwise
+\end{DoxyReturn}
+Used by Cu\+Action\+Factory\+Service\+::unregister\+Action to check whether the action is still running before unregistering. 
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a1166000ce4314e6716410c4d1d0552dc}.
+
+\mbox{\label{classCuHdbActionI_a63d0b1d3501283fb85bb1d4184d0466b}} 
+\index{CuHdbActionI@{CuHdbActionI}!getData@{getData}}
+\index{getData@{getData}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{getData()}
+{\footnotesize\ttfamily virtual void Cu\+R\+N\+D\+Action\+I\+::get\+Data (\begin{DoxyParamCaption}\item[{Cu\+Data \&}]{d\+\_\+inout }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+subclasses will implement the necessary code to analyze the request stored in the input argument and fill it in with output data 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & a Cu\+Data compiled with the necessary fields accepted by the specific implementation as input argument. data will contain additional output fields filled in by the method when it returns.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyParagraph}{note}
+get\+Data must be synchronous\+: it\textquotesingle{}s called with input arguments (d\+\_\+inout) and they are filled in within the same method in the same thread. {\itshape Asynchronous} data fetch from an activity executed in a separate thread can be accomplished by send\+Data {\itshape in combination with} Cu\+Data\+Listener\+::on\+Update. There, received data will have to be recognised as coming from a specific request and treated accordingly. 
+\end{DoxyParagraph}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_aef2768f006b68901af2c2e59af95c215}.
+
+
+
+Referenced by Cu\+R\+N\+D\+Reader\+::get\+Data().
+
+\mbox{\label{classCuHdbActionI_a602fe6246a312b0608ac75ce06dd096f}} 
+\index{CuHdbActionI@{CuHdbActionI}!getSource@{getSource}}
+\index{getSource@{getSource}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{getSource()}
+{\footnotesize\ttfamily virtual \textbf{ R\+N\+D\+Source} Cu\+R\+N\+D\+Action\+I\+::get\+Source (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+return a \doxyref{R\+N\+D\+Source}{p.}{classHdbSource} object that stores information about the Tango source 
+
+\begin{DoxyReturn}{Returns}
+\doxyref{R\+N\+D\+Source}{p.}{classHdbSource}, an object storing information on the Tango source 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a0909e8a4aeaa5a9688815f6fd8642dcd}.
+
+\mbox{\label{classCuHdbActionI_aface3e23fd4e5cca6f4afc2d8fe60437}} 
+\index{CuHdbActionI@{CuHdbActionI}!getToken@{getToken}}
+\index{getToken@{getToken}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{getToken()}
+{\footnotesize\ttfamily Cu\+Data Cu\+R\+N\+D\+Action\+I\+::get\+Token (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a659f62e0ff8b13cc7c004249bbecf859}.
+
+\mbox{\label{classCuHdbActionI_a7a026719a912f71eee3cd8a70a843df3}} 
+\index{CuHdbActionI@{CuHdbActionI}!getType@{getType}}
+\index{getType@{getType}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{getType()}
+{\footnotesize\ttfamily virtual \textbf{ Type} Cu\+R\+N\+D\+Action\+I\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+returns the type of \doxyref{Cu\+R\+N\+D\+ActionI}{p.}{classCuHdbActionI} implemented 
+
+\begin{DoxyReturn}{Returns}
+one of the values from the Type enum 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a1bd1d3321d24080d31af5984ea0e73b2}.
+
+\mbox{\label{classCuHdbActionI_af32f8f4a6f373b1d1ff4b9592cbc8e5e}} 
+\index{CuHdbActionI@{CuHdbActionI}!onProgress@{onProgress}}
+\index{onProgress@{onProgress}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{onProgress()}
+{\footnotesize\ttfamily void Cu\+R\+N\+D\+Action\+I\+::on\+Progress (\begin{DoxyParamCaption}\item[{int}]{step,  }\item[{int}]{total,  }\item[{const Cu\+Data \&}]{data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a75f8224ee4f3b68bc870f387f99c6f4e}.
+
+\mbox{\label{classCuHdbActionI_a2e6ad7f036baa76473a2a594167f6860}} 
+\index{CuHdbActionI@{CuHdbActionI}!onResult@{onResult}}
+\index{onResult@{onResult}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{onResult()\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void Cu\+R\+N\+D\+Action\+I\+::on\+Result (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a11bcee9d0ccad02f4428da49932dfddb}.
+
+\mbox{\label{classCuHdbActionI_a0f16fdc9b224ed9216f376cfce7f68ec}} 
+\index{CuHdbActionI@{CuHdbActionI}!onResult@{onResult}}
+\index{onResult@{onResult}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{onResult()\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void Cu\+R\+N\+D\+Action\+I\+::on\+Result (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ Cu\+Data $>$ \&}]{datalist }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_aaa87dbb8fa8d6b2e3a7d5979028d2143}.
+
+\mbox{\label{classCuHdbActionI_a40f9bd2f02c3b43f9c224d2ead05b8aa}} 
+\index{CuHdbActionI@{CuHdbActionI}!removeDataListener@{removeDataListener}}
+\index{removeDataListener@{removeDataListener}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{removeDataListener()}
+{\footnotesize\ttfamily virtual void Cu\+R\+N\+D\+Action\+I\+::remove\+Data\+Listener (\begin{DoxyParamCaption}\item[{Cu\+Data\+Listener $\ast$}]{l }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+remove a Cu\+Data\+Listener from the list of listeners of data updates 
+
+
+\begin{DoxyParams}{Parameters}
+{\em l} & a Cu\+Data\+Listener that will be removed from the list of listeners \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a3455a9ded051f3edf339125ab382ba84}.
+
+\mbox{\label{classCuHdbActionI_a42dbd3c5aff9a4ea2490f4fd776e441d}} 
+\index{CuHdbActionI@{CuHdbActionI}!sendData@{sendData}}
+\index{sendData@{sendData}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{sendData()}
+{\footnotesize\ttfamily virtual void Cu\+R\+N\+D\+Action\+I\+::send\+Data (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{data }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+subclasses will implement the necessary code to set data on themselves or to the activities 
+
+
+\begin{DoxyParams}{Parameters}
+{\em data} & a Cu\+Data compiled with the necessary fields accepted by the specific implementation\\
+\hline
+\end{DoxyParams}
+The data can be set locally on the object implementing this interface or can be forwarded to the activity by means of Cumbia\+::post\+Event carrying an argument derived from Cu\+Activity\+Event. See Cu\+T\+Reader\+::send\+Data for an example
+
+\begin{DoxyParagraph}{Send a request and receive a response asynchronously}
+Use send\+Data {\itshape in conjunction with} Cu\+Data\+Listener\+::on\+Update, as described in the get\+Data documentation. 
+\end{DoxyParagraph}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a327c7678e50f608000f622fd21a53184}.
+
+
+
+Referenced by Cu\+R\+N\+D\+Reader\+::send\+Data().
+
+\mbox{\label{classCuHdbActionI_a338127d29f67e3b0165e4ca685b240a5}} 
+\index{CuHdbActionI@{CuHdbActionI}!start@{start}}
+\index{start@{start}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{start()}
+{\footnotesize\ttfamily virtual void Cu\+R\+N\+D\+Action\+I\+::start (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+the method where activities are created and registered 
+
+This is the place where activities are created and registered to Cumbia through the method Cumbia\+::register\+Activity.
+
+\begin{DoxyParagraph}{Examples}
+\begin{DoxyItemize}
+\item Cu\+T\+Reader\+::start \item Cu\+T\+Writer\+::start\end{DoxyItemize}
+See also Cumbia\+::register\+Activity 
+\end{DoxyParagraph}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_aeaadae3316d0fc60db864eef9247f19d}.
+
+
+
+Referenced by Cumbia\+Hdb\+::add\+Action().
+
+\mbox{\label{classCuHdbActionI_aeee23f4b1de8187c9bd1635a039c78f4}} 
+\index{CuHdbActionI@{CuHdbActionI}!stop@{stop}}
+\index{stop@{stop}!CuHdbActionI@{CuHdbActionI}}
+\subsubsection{stop()}
+{\footnotesize\ttfamily virtual void Cu\+R\+N\+D\+Action\+I\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+the method where activities are unregistered from Cumbia 
+
+This is the place where activities are unregistered from Cumbia by the Cumbia\+::unregister\+Activity method
+
+\begin{DoxyParagraph}{Examples}
+\begin{DoxyItemize}
+\item Cu\+T\+Reader\+::stop \item Cu\+T\+Writer\+::stop\end{DoxyItemize}
+See also Cumbia\+::unregister\+Activity 
+\end{DoxyParagraph}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader} \doxyref{}{p.}{classCuHdbActionReader_a71162f2006f32dbb272552149f08123e}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cuhdbactioni.\+h}\item 
+\textbf{ cuhdbactioni.\+cpp}\end{DoxyCompactItemize}

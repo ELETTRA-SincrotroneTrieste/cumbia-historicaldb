@@ -1,0 +1,132 @@
+\section{Cumbia\+Hdb Class Reference}
+\label{classCumbiaHdb}\index{CumbiaHdb@{CumbiaHdb}}
+
+
+{\ttfamily \#include $<$cumbiahdb.\+h$>$}
+
+
+
+Inheritance diagram for Cumbia\+Hdb\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=166pt]{classCumbiaHdb__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \textbf{ Type} \{ \textbf{ Cumbia\+R\+N\+D\+Type} = Cumbia\+::Cumbia\+User\+Type + 12
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cumbia\+Hdb} (Cu\+Thread\+Factory\+ImplI $\ast$tfi, Cu\+Threads\+Event\+Bridge\+Factory\+\_\+I $\ast$teb)
+\item 
+\textbf{ $\sim$\+Cumbia\+Hdb} ()
+\item 
+Cu\+Thread\+Factory\+ImplI $\ast$ \textbf{ get\+Thread\+Factory\+Impl} () const
+\item 
+Cu\+Threads\+Event\+Bridge\+Factory\+\_\+I $\ast$ \textbf{ get\+Thread\+Events\+Bridge\+Factory} () const
+\item 
+virtual int \textbf{ get\+Type} () const
+\item 
+void \textbf{ add\+Action} (const std\+::string \&source, Cu\+Data\+Listener $\ast$l, const \textbf{ Cu\+R\+N\+D\+Action\+FactoryI} \&f)
+\item 
+void \textbf{ unlink\+Listener} (const string \&source, \textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type} t, Cu\+Data\+Listener $\ast$l)
+\item 
+\textbf{ Cu\+R\+N\+D\+ActionI} $\ast$ \textbf{ find\+Action} (const std\+::string \&source, \textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type} t) const
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Enumeration Documentation}
+\mbox{\label{classCumbiaHdb_a49b68e91f2ca8e80112779dd33af7fa7}} 
+\index{CumbiaHdb@{CumbiaHdb}!Type@{Type}}
+\index{Type@{Type}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{Type}
+{\footnotesize\ttfamily enum \textbf{ Cumbia\+Hdb\+::\+Type}}
+
+\begin{DoxyEnumFields}{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{CumbiaHdbType@{CumbiaHdbType}!CumbiaHdb@{CumbiaHdb}}\index{CumbiaHdb@{CumbiaHdb}!CumbiaHdbType@{CumbiaHdbType}}}\mbox{\label{classCumbiaHdb_a49b68e91f2ca8e80112779dd33af7fa7a5659675198ab3faece964e2e6f31f161}} 
+Cumbia\+R\+N\+D\+Type&\\
+\hline
+
+\end{DoxyEnumFields}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCumbiaHdb_ab19770d70c69c561057a5748a44c3106}} 
+\index{CumbiaHdb@{CumbiaHdb}!CumbiaHdb@{CumbiaHdb}}
+\index{CumbiaHdb@{CumbiaHdb}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{CumbiaHdb()}
+{\footnotesize\ttfamily Cumbia\+Hdb\+::\+Cumbia\+Hdb (\begin{DoxyParamCaption}\item[{Cu\+Thread\+Factory\+ImplI $\ast$}]{tfi,  }\item[{Cu\+Threads\+Event\+Bridge\+Factory\+\_\+I $\ast$}]{teb }\end{DoxyParamCaption})}
+
+\mbox{\label{classCumbiaHdb_a02949e73d730b09b443a6a8d50cee71a}} 
+\index{CumbiaHdb@{CumbiaHdb}!````~CumbiaHdb@{$\sim$CumbiaHdb}}
+\index{````~CumbiaHdb@{$\sim$CumbiaHdb}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{$\sim$CumbiaHdb()}
+{\footnotesize\ttfamily Cumbia\+Hdb\+::$\sim$\+Cumbia\+Hdb (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{classCumbiaHdb_a494844de57dd03c99b2cd763d3b4995e}} 
+\index{CumbiaHdb@{CumbiaHdb}!addAction@{addAction}}
+\index{addAction@{addAction}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{addAction()}
+{\footnotesize\ttfamily void Cumbia\+Hdb\+::add\+Action (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{source,  }\item[{Cu\+Data\+Listener $\ast$}]{l,  }\item[{const \textbf{ Cu\+R\+N\+D\+Action\+FactoryI} \&}]{f }\end{DoxyParamCaption})}
+
+
+
+References Cu\+R\+N\+D\+Action\+I\+::add\+Data\+Listener(), Cu\+R\+N\+D\+Action\+Factory\+Service\+::\+Cu\+R\+N\+D\+Action\+Factory\+Service\+Type, Cu\+R\+N\+D\+Action\+Factory\+Service\+::find\+Active(), Cu\+R\+N\+D\+Action\+Factory\+I\+::get\+Type(), Cu\+R\+N\+D\+Action\+Factory\+Service\+::register\+Action(), Cumbia\+R\+N\+D\+World\+::source\+\_\+valid(), and Cu\+R\+N\+D\+Action\+I\+::start().
+
+\mbox{\label{classCumbiaHdb_a0779f2c8e25bbedf29b57697e55e5cdb}} 
+\index{CumbiaHdb@{CumbiaHdb}!findAction@{findAction}}
+\index{findAction@{findAction}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{findAction()}
+{\footnotesize\ttfamily \textbf{ Cu\+R\+N\+D\+ActionI} $\ast$ Cumbia\+Hdb\+::find\+Action (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{source,  }\item[{\textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type}}]{t }\end{DoxyParamCaption}) const}
+
+
+
+References Cu\+R\+N\+D\+Action\+Factory\+Service\+::\+Cu\+R\+N\+D\+Action\+Factory\+Service\+Type, and Cu\+R\+N\+D\+Action\+Factory\+Service\+::find\+Active().
+
+\mbox{\label{classCumbiaHdb_af161b258e5759f7c9b957d39c830bb27}} 
+\index{CumbiaHdb@{CumbiaHdb}!getThreadEventsBridgeFactory@{getThreadEventsBridgeFactory}}
+\index{getThreadEventsBridgeFactory@{getThreadEventsBridgeFactory}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{getThreadEventsBridgeFactory()}
+{\footnotesize\ttfamily Cu\+Threads\+Event\+Bridge\+Factory\+\_\+I $\ast$ Cumbia\+Hdb\+::get\+Thread\+Events\+Bridge\+Factory (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\label{classCumbiaHdb_a12e07e9eb104d0c4257bef13db261e2d}} 
+\index{CumbiaHdb@{CumbiaHdb}!getThreadFactoryImpl@{getThreadFactoryImpl}}
+\index{getThreadFactoryImpl@{getThreadFactoryImpl}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{getThreadFactoryImpl()}
+{\footnotesize\ttfamily Cu\+Thread\+Factory\+ImplI $\ast$ Cumbia\+Hdb\+::get\+Thread\+Factory\+Impl (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\label{classCumbiaHdb_a2356a477d92a0591c10e445f9d13036a}} 
+\index{CumbiaHdb@{CumbiaHdb}!getType@{getType}}
+\index{getType@{getType}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{getType()}
+{\footnotesize\ttfamily int Cumbia\+Hdb\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+References Cumbia\+R\+N\+D\+Type.
+
+\mbox{\label{classCumbiaHdb_a7a64a208a52fb799588390e55aac971e}} 
+\index{CumbiaHdb@{CumbiaHdb}!unlinkListener@{unlinkListener}}
+\index{unlinkListener@{unlinkListener}!CumbiaHdb@{CumbiaHdb}}
+\subsubsection{unlinkListener()}
+{\footnotesize\ttfamily void Cumbia\+Hdb\+::unlink\+Listener (\begin{DoxyParamCaption}\item[{const string \&}]{source,  }\item[{\textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type}}]{t,  }\item[{Cu\+Data\+Listener $\ast$}]{l }\end{DoxyParamCaption})}
+
+
+
+References Cu\+R\+N\+D\+Action\+Factory\+Service\+::\+Cu\+R\+N\+D\+Action\+Factory\+Service\+Type, and Cu\+R\+N\+D\+Action\+Factory\+Service\+::find().
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cumbiahdb.\+h}\item 
+\textbf{ cumbiahdb.\+cpp}\end{DoxyCompactItemize}

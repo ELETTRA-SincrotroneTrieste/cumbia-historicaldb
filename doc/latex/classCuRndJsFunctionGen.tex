@@ -1,0 +1,101 @@
+\section{Cu\+Rnd\+Js\+Function\+Gen Class Reference}
+\label{classCuRndJsFunctionGen}\index{CuRndJsFunctionGen@{CuRndJsFunctionGen}}
+
+
+{\ttfamily \#include $<$cuhdbfunctiongenerators.\+h$>$}
+
+
+
+Inheritance diagram for Cu\+Rnd\+Js\+Function\+Gen\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=192pt]{classCuRndJsFunctionGen__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+Rnd\+Js\+Function\+Gen} (const Q\+String \&filenam)
+\item 
+void \textbf{ configure} (const Cu\+Data \&options)
+\item 
+void \textbf{ generate} (Cu\+Data \&res)
+\begin{DoxyCompactList}\small\item\em Executes the function in the Java\+Script file specified in the class constructor. \end{DoxyCompactList}\item 
+\textbf{ Type} \textbf{ get\+Type} () const
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuRndJsFunctionGen_a914e483fc1f229677b4f3d8e1b6698b7}} 
+\index{CuRndJsFunctionGen@{CuRndJsFunctionGen}!CuRndJsFunctionGen@{CuRndJsFunctionGen}}
+\index{CuRndJsFunctionGen@{CuRndJsFunctionGen}!CuRndJsFunctionGen@{CuRndJsFunctionGen}}
+\subsubsection{CuRndJsFunctionGen()}
+{\footnotesize\ttfamily Cu\+Rnd\+Js\+Function\+Gen\+::\+Cu\+Rnd\+Js\+Function\+Gen (\begin{DoxyParamCaption}\item[{const Q\+String \&}]{filenam }\end{DoxyParamCaption})}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{classCuRndJsFunctionGen_ae8146842d732e21043e9819b5601f46d}} 
+\index{CuRndJsFunctionGen@{CuRndJsFunctionGen}!configure@{configure}}
+\index{configure@{configure}!CuRndJsFunctionGen@{CuRndJsFunctionGen}}
+\subsubsection{configure()}
+{\footnotesize\ttfamily void Cu\+Rnd\+Js\+Function\+Gen\+::configure (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{options }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \textbf{ Cu\+Rnd\+Function\+GenA} \doxyref{}{p.}{classCuRndFunctionGenA_a0a51f42cbb2a01e29584685fed75d0de}.
+
+
+
+References Cu\+Rnd\+Function\+Gen\+A\+::extract\+Conf().
+
+\mbox{\label{classCuRndJsFunctionGen_a535531f0a6ae1f29a6be932f81c30864}} 
+\index{CuRndJsFunctionGen@{CuRndJsFunctionGen}!generate@{generate}}
+\index{generate@{generate}!CuRndJsFunctionGen@{CuRndJsFunctionGen}}
+\subsubsection{generate()}
+{\footnotesize\ttfamily void Cu\+Rnd\+Js\+Function\+Gen\+::generate (\begin{DoxyParamCaption}\item[{Cu\+Data \&}]{res }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Executes the function in the Java\+Script file specified in the class constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em res} & partially filled data that will store the result of the function in the \char`\"{}value\char`\"{} value.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyParagraph}{Input arguments}
+The following input arguments will be passed to the Java\+Script function, in this exact order. The arguments are stored in the options within the configure method.
+\end{DoxyParagraph}
+\begin{DoxyItemize}
+\item size (the size of data to be generated\+: scalar or spectrum with the given size) \item min the minimum value expected from the function \item max the maximum value expected from the function \item period the interval in milliseconds between subsequent function calls \item call count, the number of times generate has been called so far \item last result, the last valid value obtained from the previous call\end{DoxyItemize}
+\begin{DoxyParagraph}{Output from the Java\+Script function}
+The result from the Java\+Script function is stored into the {\itshape value} value within the input Cu\+Data argument passed as ({\itshape non const}) reference.
+\end{DoxyParagraph}
+If an error occurs, {\itshape err} and {\itshape msg} values will be set accordingly 
+
+Implements \textbf{ Cu\+Rnd\+Function\+GenA} \doxyref{}{p.}{classCuRndFunctionGenA_a7f9b13c9c2fba07fe63b6f48bf58dd4d}.
+
+\mbox{\label{classCuRndJsFunctionGen_a90835ecd841b746890bb3f90b9351340}} 
+\index{CuRndJsFunctionGen@{CuRndJsFunctionGen}!getType@{getType}}
+\index{getType@{getType}!CuRndJsFunctionGen@{CuRndJsFunctionGen}}
+\subsubsection{getType()}
+{\footnotesize\ttfamily \textbf{ Cu\+Rnd\+Function\+Gen\+A\+::\+Type} Cu\+Rnd\+Js\+Function\+Gen\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Implements \textbf{ Cu\+Rnd\+Function\+GenA} \doxyref{}{p.}{classCuRndFunctionGenA_a6cac08ae3ef89abe47e2baf0fb0cb13a}.
+
+
+
+References Cu\+Rnd\+Function\+Gen\+A\+::\+From\+J\+S\+FileF.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cuhdbfunctiongenerators.\+h}\item 
+\textbf{ cuhdbfunctiongenerators.\+cpp}\end{DoxyCompactItemize}

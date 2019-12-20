@@ -1,0 +1,31 @@
+# Database user name
+dbuser = %s
+# Database password for the given user name
+dbpass = %s
+# Database host name
+dbhost = %s
+# Database name (e.g. hdb, hdbpp)
+dbname = %s
+
+# The FillFromThePastMode configures how the absence of data in the desired time window is managed.
+# Possible values (if not specified, the default is None):
+# None:        nothing is done if the window does not contain data or if valid data starts late.
+# KeepWindow:  look back for the most recent valid data and make it the first value of the window.
+#              The first timestamp is set to match the start of the time window.
+# WidenWindow: look back until the most recent valid data is found and make it the first value in the
+#              result. Its original timestamp is preserved.
+#
+FillFromThePastMode = None*,WidenWindow,KeepWindow
+
+
+# The FillFromThePastThresholdPercent instructs the extractor to look back for the most recent
+# valid value, if FillFromThePastMode is not None.
+# The value is a floating point number representing the percentage of the whole time interval that the
+# first data in the desired must fall in so that fill from the past is unnecessary.
+# For example, suppose you requested a time interval of 10 hours, i.e. t_end - t_start = 10hours.
+# Then, if FillFromThePastThresholdPercent is 10.0 and the first valid data occurs within the first hour,
+# no need to fill from the past. Otherwise FillFromThePastMode determines how the the first value is
+# brought into the data set at the beginning of the window.
+# Default: 5%
+#
+FillFromThePastThresholdPercent = %f

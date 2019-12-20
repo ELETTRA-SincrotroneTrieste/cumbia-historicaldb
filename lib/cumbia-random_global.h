@@ -1,0 +1,12 @@
+#ifndef CUMBIAHDB_GLOBAL_H
+#define CUMBIAHDB_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(CUMBIAHDB_LIBRARY)
+#  define CUMBIAHDBSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define CUMBIAHDBSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // CUMBIAHDB_GLOBAL_H

@@ -1,0 +1,133 @@
+\section{Cu\+R\+N\+D\+Action\+Reader\+Factory Class Reference}
+\label{classCuHdbActionReaderFactory}\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+
+
+{\ttfamily \#include $<$cuhdbactionfactories.\+h$>$}
+
+
+
+Inheritance diagram for Cu\+R\+N\+D\+Action\+Reader\+Factory\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=220pt]{classCuHdbActionReaderFactory__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+R\+N\+D\+Action\+Reader\+Factory} ()
+\item 
+void \textbf{ set\+Options} (const Cu\+Data \&o)
+\item 
+virtual \textbf{ $\sim$\+Cu\+R\+N\+D\+Action\+Reader\+Factory} ()
+\item 
+\textbf{ Cu\+R\+N\+D\+ActionI} $\ast$ \textbf{ create} (const std\+::string \&s, \textbf{ Cumbia\+Hdb} $\ast$c\+\_\+hdb) const
+\begin{DoxyCompactList}\small\item\em creates and returns a \doxyref{Cu\+R\+N\+D\+Action\+Reader}{p.}{classCuHdbActionReader}, (that implements the \doxyref{Cu\+R\+N\+D\+ActionI}{p.}{classCuHdbActionI} interface) \end{DoxyCompactList}\item 
+\textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type} \textbf{ get\+Type} () const
+\begin{DoxyCompactList}\small\item\em Return the type of action that the factory creates. \end{DoxyCompactList}\item 
+bool \textbf{ is\+Shareable} () const
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuHdbActionReaderFactory_a467d8ef8205536aff2511cbc8b9b4421}} 
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\subsubsection{CuHdbActionReaderFactory()}
+{\footnotesize\ttfamily Cu\+R\+N\+D\+Action\+Reader\+Factory\+::\+Cu\+R\+N\+D\+Action\+Reader\+Factory (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\mbox{\label{classCuHdbActionReaderFactory_a23eaa168d64f0d52d3c3cf10853c8ec1}} 
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!````~CuHdbActionReaderFactory@{$\sim$CuHdbActionReaderFactory}}
+\index{````~CuHdbActionReaderFactory@{$\sim$CuHdbActionReaderFactory}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\subsubsection{$\sim$CuHdbActionReaderFactory()}
+{\footnotesize\ttfamily Cu\+R\+N\+D\+Action\+Reader\+Factory\+::$\sim$\+Cu\+R\+N\+D\+Action\+Reader\+Factory (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{classCuHdbActionReaderFactory_ac058d00c50f43f8a16aabf36fe712720}} 
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!create@{create}}
+\index{create@{create}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\subsubsection{create()}
+{\footnotesize\ttfamily \textbf{ Cu\+R\+N\+D\+ActionI} $\ast$ Cu\+R\+N\+D\+Action\+Reader\+Factory\+::create (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{s,  }\item[{\textbf{ Cumbia\+Hdb} $\ast$}]{c\+\_\+hdb }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+creates and returns a \doxyref{Cu\+R\+N\+D\+Action\+Reader}{p.}{classCuHdbActionReader}, (that implements the \doxyref{Cu\+R\+N\+D\+ActionI}{p.}{classCuHdbActionI} interface) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em s} & a string with the name of the source \\
+\hline
+{\em ct} & a pointer to \doxyref{Cumbia\+Hdb}{p.}{classCumbiaHdb} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a \doxyref{Cu\+R\+N\+D\+Action\+Reader}{p.}{classCuHdbActionReader}, that implements the \doxyref{Cu\+R\+N\+D\+ActionI}{p.}{classCuHdbActionI} interface
+\end{DoxyReturn}
+The source and the \doxyref{Cumbia\+Hdb}{p.}{classCumbiaHdb} reference are passed to the \doxyref{Cu\+R\+N\+D\+Action\+Reader}{p.}{classCuHdbActionReader} If options have been set, normally through \doxyref{Cu\+R\+N\+D\+Action\+Reader\+Factory\+::create}{p.}{classCuHdbActionReaderFactory_ac058d00c50f43f8a16aabf36fe712720}, they are used to configure the \doxyref{Cu\+R\+N\+D\+Action\+Reader}{p.}{classCuHdbActionReader}.
+
+\begin{DoxyParagraph}{options}
+The recognised options are\+: \begin{DoxyItemize}
+\item \char`\"{}period\char`\"{} an integer, in milliseconds, for the polling period. Converted with\+: Cu\+Variant\+::to\+Int \item \char`\"{}refresh\+\_\+mode\char`\"{}\+: an integer defining the Tango refresh mode. Converted with\+: Cu\+Variant\+::to\+Int\end{DoxyItemize}
+
+\end{DoxyParagraph}
+\begin{DoxyParagraph}{note}
+Please use the Cu\+Tango\+Opt\+Builder class rather than filling in the options manually.
+\end{DoxyParagraph}
+\begin{DoxySeeAlso}{See also}
+Cu\+Tango\+Opt\+Builder 
+\end{DoxySeeAlso}
+
+
+Implements \textbf{ Cu\+R\+N\+D\+Action\+FactoryI} \doxyref{}{p.}{classCuHdbActionFactoryI_a490610a4e6abfc106f2ae811f384f200}.
+
+
+
+References Cu\+R\+N\+D\+Action\+Reader\+::set\+Options().
+
+\mbox{\label{classCuHdbActionReaderFactory_a3c94c78dd4edd59b3c271a0f0b9b6519}} 
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!getType@{getType}}
+\index{getType@{getType}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\subsubsection{getType()}
+{\footnotesize\ttfamily \textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type} Cu\+R\+N\+D\+Action\+Reader\+Factory\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Return the type of action that the factory creates. 
+
+\begin{DoxyReturn}{Returns}
+the type of action that the factory creates 
+\end{DoxyReturn}
+
+
+Implements \textbf{ Cu\+R\+N\+D\+Action\+FactoryI} \doxyref{}{p.}{classCuHdbActionFactoryI_a4fefe6d947e856b952acaa49e55aa948}.
+
+
+
+References Cu\+R\+N\+D\+Action\+I\+::\+Reader.
+
+\mbox{\label{classCuHdbActionReaderFactory_aabcdd9497d429ad44f48d9a5233f69d8}} 
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!isShareable@{isShareable}}
+\index{isShareable@{isShareable}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\subsubsection{isShareable()}
+{\footnotesize\ttfamily bool Cu\+R\+N\+D\+Action\+Reader\+Factory\+::is\+Shareable (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+\mbox{\label{classCuHdbActionReaderFactory_adb2089bb7124fdf6fbceae32c863c25d}} 
+\index{CuHdbActionReaderFactory@{CuHdbActionReaderFactory}!setOptions@{setOptions}}
+\index{setOptions@{setOptions}!CuHdbActionReaderFactory@{CuHdbActionReaderFactory}}
+\subsubsection{setOptions()}
+{\footnotesize\ttfamily void Cu\+R\+N\+D\+Action\+Reader\+Factory\+::set\+Options (\begin{DoxyParamCaption}\item[{const Cu\+Data \&}]{o }\end{DoxyParamCaption})}
+
+
+
+Referenced by Cu\+R\+N\+D\+Reader\+::set\+Source().
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cuhdbactionfactories.\+h}\item 
+\textbf{ cuhdbactionfactories.\+cpp}\end{DoxyCompactItemize}

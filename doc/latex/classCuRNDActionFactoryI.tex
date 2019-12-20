@@ -1,0 +1,100 @@
+\section{Cu\+R\+N\+D\+Action\+FactoryI Class Reference}
+\label{classCuHdbActionFactoryI}\index{CuHdbActionFactoryI@{CuHdbActionFactoryI}}
+
+
+Factory to instantiate Cu\+Tango\+ActionI implementations, such as readers, writers and attribute configuration actions.  
+
+
+
+
+{\ttfamily \#include $<$cuhdbactionfactoryi.\+h$>$}
+
+
+
+Inheritance diagram for Cu\+R\+N\+D\+Action\+FactoryI\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=220pt]{classCuHdbActionFactoryI__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\textbf{ Cu\+R\+N\+D\+Action\+FactoryI} ()
+\item 
+virtual \textbf{ Cu\+R\+N\+D\+ActionI} $\ast$ \textbf{ create} (const std\+::string \&source, \textbf{ Cumbia\+Hdb} $\ast$ct) const =0
+\item 
+virtual \textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type} \textbf{ get\+Type} () const =0
+\begin{DoxyCompactList}\small\item\em Return the type of action that the factory creates. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Factory to instantiate Cu\+Tango\+ActionI implementations, such as readers, writers and attribute configuration actions. 
+
+Notable implementations
+
+\begin{DoxyItemize}
+\item Cu\+Tango\+Reader\+Factory \item Cu\+Tango\+Writer\+Factory \item Cu\+Tango\+Att\+Conf\+Factory \end{DoxyItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\label{classCuHdbActionFactoryI_a98667df47d57402db687aec30a0a62b5}} 
+\index{CuHdbActionFactoryI@{CuHdbActionFactoryI}!CuHdbActionFactoryI@{CuHdbActionFactoryI}}
+\index{CuHdbActionFactoryI@{CuHdbActionFactoryI}!CuHdbActionFactoryI@{CuHdbActionFactoryI}}
+\subsubsection{CuHdbActionFactoryI()}
+{\footnotesize\ttfamily Cu\+R\+N\+D\+Action\+Factory\+I\+::\+Cu\+R\+N\+D\+Action\+FactoryI (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+\subsection{Member Function Documentation}
+\mbox{\label{classCuHdbActionFactoryI_a490610a4e6abfc106f2ae811f384f200}} 
+\index{CuHdbActionFactoryI@{CuHdbActionFactoryI}!create@{create}}
+\index{create@{create}!CuHdbActionFactoryI@{CuHdbActionFactoryI}}
+\subsubsection{create()}
+{\footnotesize\ttfamily virtual \textbf{ Cu\+R\+N\+D\+ActionI}$\ast$ Cu\+R\+N\+D\+Action\+Factory\+I\+::create (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{source,  }\item[{\textbf{ Cumbia\+Hdb} $\ast$}]{ct }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+Pure virtual method that must be implemented by subclasses to return a valid Cu\+Tango\+ActionI instance.
+
+
+\begin{DoxyParams}{Parameters}
+{\em source} & a string identifying a source to connect to \\
+\hline
+{\em ct} & a pointer to a \doxyref{Cumbia\+Hdb}{p.}{classCumbiaHdb} instance \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader\+Factory} \doxyref{}{p.}{classCuHdbActionReaderFactory_ac058d00c50f43f8a16aabf36fe712720}.
+
+
+
+Referenced by Cu\+R\+N\+D\+Action\+Factory\+Service\+::register\+Action().
+
+\mbox{\label{classCuHdbActionFactoryI_a4fefe6d947e856b952acaa49e55aa948}} 
+\index{CuHdbActionFactoryI@{CuHdbActionFactoryI}!getType@{getType}}
+\index{getType@{getType}!CuHdbActionFactoryI@{CuHdbActionFactoryI}}
+\subsubsection{getType()}
+{\footnotesize\ttfamily virtual \textbf{ Cu\+R\+N\+D\+Action\+I\+::\+Type} Cu\+R\+N\+D\+Action\+Factory\+I\+::get\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Return the type of action that the factory creates. 
+
+\begin{DoxyReturn}{Returns}
+the type of action that the factory creates 
+\end{DoxyReturn}
+
+
+Implemented in \textbf{ Cu\+R\+N\+D\+Action\+Reader\+Factory} \doxyref{}{p.}{classCuHdbActionReaderFactory_a3c94c78dd4edd59b3c271a0f0b9b6519}.
+
+
+
+Referenced by Cumbia\+Hdb\+::add\+Action(), and Cu\+R\+N\+D\+Action\+Factory\+Service\+::register\+Action().
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\textbf{ cuhdbactionfactoryi.\+h}\end{DoxyCompactItemize}
