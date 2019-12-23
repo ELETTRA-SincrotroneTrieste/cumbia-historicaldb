@@ -40,4 +40,7 @@ SOURCES += \
 HEADERS += \
     quhdbbrowser.h
 
+DISTFILES += \
+    README.md
+
 
