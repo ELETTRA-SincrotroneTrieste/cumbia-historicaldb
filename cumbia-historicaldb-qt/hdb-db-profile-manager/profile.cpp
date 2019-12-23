@@ -6,6 +6,7 @@
 #include <cumacros.h>
 #include <QDir>
 #include <QDateTime>
+#include <cumbiahdbworld.h>
 
 Option::Option()
 {
@@ -33,11 +34,12 @@ QString Profile::name() const {
 }
 
 bool Profile::load(const QString &name, bool is_template) {
+    CumbiaHdbWorld wo;
     m_optionsList.clear();
     m_map.clear();
     m_name = name;
     QString fpath;
-    is_template ? fpath = name : fpath = QString("%1/%2.dat").arg(PROFILES_DIR).arg(name);
+    is_template ? fpath = name : fpath = QString("%1/%2.dat").arg(wo.getDbProfilesDir().c_str()).arg(name);
     m_errMsg.clear();
     QFile file(fpath);
     if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
@@ -161,8 +163,8 @@ bool Profile::save()
     m_name.isEmpty() ? m_errMsg = "Profile.save: cannot save a profile with an empty name" : m_errMsg = "";
     if(m_name.isEmpty())
         return false;
-    QString dirpath = QString(PROFILES_DIR);
-    QDir profiles_dir(PROFILES_DIR);
+    QString dirpath = QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir());
+    QDir profiles_dir(dirpath);
     bool ok = profiles_dir.exists();
     if(!ok)
         ok = profiles_dir.mkpath(dirpath);
@@ -195,7 +197,7 @@ QString Profile::errorMessage() const {
 bool Profile::deleteProfile(const QString &name)
 {
     m_errMsg.clear();
-    QString fpath = QString("%1/%2.dat").arg(PROFILES_DIR).arg(name);
+    QString fpath = QString("%1/%2.dat").arg(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir())).arg(name);
     QFile file(fpath);
     bool ok = file.exists();
     if(ok)
@@ -208,7 +210,7 @@ bool Profile::deleteProfile(const QString &name)
 QStringList Profile::list() const
 {
     QStringList li;
-    QDir profiles_dir(PROFILES_DIR);
+    QDir profiles_dir(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir()));
     if(profiles_dir.exists()) {
         li = profiles_dir.entryList(QStringList() << "*.dat");
         for(int i = 0; i < li.size(); i++)

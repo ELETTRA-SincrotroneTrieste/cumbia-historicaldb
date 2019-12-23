@@ -1,3 +1,4 @@
+lib/cuhdb_config.h
 lib/cuhdbactionfactories.cpp
 lib/cuhdbactionfactories.h
 lib/cuhdbactionfactoryi.h

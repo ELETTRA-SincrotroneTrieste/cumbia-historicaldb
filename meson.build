@@ -45,7 +45,7 @@ sources = [
 
 includedirs = include_directories('lib')
 
-cpp_arguments = [  '-DCUMBIA_DEBUG_OUTPUT=1', '-DHOME_DB_CONFIG_DIR=.config/cumbia-hdb' ]
+cpp_arguments = [  '-DCUMBIA_DEBUG_OUTPUT=1' ]
 
 deps = [ dependency('threads'), dependency('cumbia'), dependency('hdbextractor++') ]
 

@@ -38,7 +38,6 @@ public:
     void setHdbXSettings(HdbXSettings *hdb_settings);
     HdbXSettings *hdbXSettings() const;
 
-
     CuData getDbParams() const;
 
     virtual int getType() const;

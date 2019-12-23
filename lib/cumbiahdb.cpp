@@ -1,5 +1,4 @@
 #include "cumbiahdb.h"
-
 #include <cumacros.h>
 #include <cudatalistener.h>
 #include <cuserviceprovider.h>
@@ -9,14 +8,9 @@
 #include <cuthreadfactoryimpl.h>
 #include <cuthreadseventbridgefactory_i.h>
 #include <hdbxsettings.h>
-// to get home dir
-#include <pwd.h>
-#include <unistd.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <string.h> // strerror
-
-#define HOME_DB_CONFIG_DIR ".config/cumbiahdb"
 
 class CumbiaHdbPrivate {
 public:
@@ -101,11 +95,8 @@ CuThreadsEventBridgeFactory_I *CumbiaHdb::getThreadEventsBridgeFactory() const
 }
 
 void CumbiaHdb::setDbProfile(const string &db_profile_name) {
-    // getpwuid return value may point to a static area, and may be overwritten
-    // by subsequent calls. (Do not pass the returned  pointer to free)
-    struct passwd *pw = getpwuid(getuid());
-    const char *homedir = pw->pw_dir;
-    std::string fnam = std::string(homedir) + "/" + std::string(HOME_DB_CONFIG_DIR) + "/" + db_profile_name + ".dat";
+    CumbiaHdbWorld world;
+    std::string fnam =  world.getDbProfilesDir() + "/" + db_profile_name + ".dat";
     HdbXSettings* hdbxs = new HdbXSettings();
     hdbxs->loadFromFile(fnam.c_str());
     if(hdbxs->hasError()) {

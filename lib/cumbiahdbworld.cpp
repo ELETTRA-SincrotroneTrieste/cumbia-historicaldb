@@ -1,6 +1,11 @@
 #include "cumbiahdbworld.h"
 #include <xvariant.h>
 #include <cudata.h>
+// to get home dir
+#include <pwd.h>
+#include <unistd.h>
+#include <string.h> // strlen
+#include "cuhdb_config.h"
 
 CumbiaHdbWorld::CumbiaHdbWorld()
 {
@@ -78,4 +83,18 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
             res["msg"] = "CumbiaHdbWorld::extract_data: only scalar data is supported for the moment";
         }
     }
+}
+
+std::string CumbiaHdbWorld::getDbProfilesDir() const {
+    size_t pos;
+    const char* hofind = "$${HOME_DIR}";
+    std::string prd = std::string(PROFILES_DIR);
+    pos = prd.find(hofind);
+    if(pos != std::string::npos && getenv("HOME") != nullptr) {
+        // getpwuid return value may point to a static area, and may be overwritten
+        // by subsequent calls. (Do not pass the returned  pointer to free)
+        struct passwd *pw = getpwuid(getuid());
+        prd.replace(pos, strlen(hofind), std::string(pw->pw_dir));
+    }
+    return prd;
 }

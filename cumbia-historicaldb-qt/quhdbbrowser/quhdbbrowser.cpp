@@ -11,6 +11,15 @@
 #include <qthreadseventbridgefactory.h>
 #include <cupluginloader.h>
 #include <cuhistoricaldbplugin_i.h>
+#include <QCheckBox>
+
+#ifdef QUMBIA_TANGO_CONTROLS_VERSION
+#include <cumbiatango.h>
+#include <cutango-world.h>
+#include <cutreader.h>
+#include <cutcontrolsreader.h>
+
+#endif
 
 QuHdbBrowser::QuHdbBrowser(QWidget *parent)
     : QWidget(parent)
@@ -38,6 +47,15 @@ QuHdbBrowser::QuHdbBrowser(QWidget *parent)
         QMessageBox::information(this, "Usage", msg);
         setDisabled(true);
     }
+
+#ifdef QUMBIA_TANGO_CONTROLS_VERSION
+    CumbiaTango *cut = new CumbiaTango(new CuThreadFactoryImpl(), new QThreadsEventBridgeFactory());
+    m_cupool->registerCumbiaImpl("tango", cut);
+    m_cupool->setSrcPatterns("tango", CuTangoWorld().srcPatterns());
+    m_fpool.registerImpl("tango", CuTReaderFactory());
+    m_fpool.setSrcPatterns("tango", CuTangoWorld().srcPatterns());
+#endif
+
     QDateTimeEdit *t1 = new QDateTimeEdit(this);
     QDateTimeEdit *t2 = new QDateTimeEdit(this);
     t1->setObjectName("dte1");
@@ -54,6 +72,7 @@ QuHdbBrowser::QuHdbBrowser(QWidget *parent)
     plot->setShowDateOnTimeAxis(true);
     plot->setUpperBoundExtra(QwtPlot::xBottom, 0);
 
+
     QGridLayout *glo = new QGridLayout(this);
     glo->addWidget(plot, 0, 0, 4, 6);
     glo->addWidget(new QLabel("Start and stop date", this), 4, 0, 1 , 2);
@@ -61,7 +80,14 @@ QuHdbBrowser::QuHdbBrowser(QWidget *parent)
     glo->addWidget(t2, 4, 3, 1, 1);
     glo->addWidget(pbNow, 4, 4, 1, 1);
     glo->addWidget(pbGet, 4, 5, 1, 1);
-    glo->addWidget(lesrc, 5, 0, 1, 6);
+    glo->addWidget(lesrc, 5, 0, 1, 5);
+
+#ifdef QUMBIA_TANGO_CONTROLS_VERSION
+    QCheckBox *cb = new QCheckBox("Read live", this);
+    cb->setObjectName("cbLive");
+    cb->setChecked(true);
+    glo->addWidget(cb, 5, 5, 1, 1);
+#endif
 
     lesrc->setText("inj/power_supply/psch_inj.01/Current inj/power_supply/psch_inj.02/Current"
                    " inj/power_supply/pscv_inj.01/Current inj/power_supply/pscv_inj.02/Current");
@@ -85,12 +111,16 @@ void QuHdbBrowser::get() {
     QDateTime t1 = findChild<QDateTimeEdit *>("dte1")->dateTime();
     QDateTime t2 = findChild<QDateTimeEdit *>("dte2")->dateTime();
     QStringList srcs = findChild<QLineEdit *>()->text().split(QRegExp("\\s+"));
+    QStringList live;
+
     for(int i = 0; i < srcs.size(); i++) {
+        if(findChild<QCheckBox *>("cbLive") && findChild<QCheckBox *>("cbLive")->isChecked())
+            live << srcs[i];
         srcs[i] = "hdb://" + srcs[i] + + "(" +
                 t1.toString("yyyy-MM-dd hh:mm:ss") + "," + t2.toString("yyyy-MM-dd hh:mm:ss") + ")";
     }
     if(t2 > t1) {
-        findChild<QuTrendPlot *>()->setSources(srcs);
+        findChild<QuTrendPlot *>()->setSources(srcs + live);
     }
 }
 

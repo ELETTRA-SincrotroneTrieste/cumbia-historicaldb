@@ -8,18 +8,9 @@ packagesExist(cumbia-qtcontrols) {
     message("quhdbbrowser: package cumbia-qtcontrols not found")
 }
 
-#packagesExist(cumbia) {
-#    PKGCONFIG += cumbia
-#} else {
-#    message("quhdbbrowser: package cumbia not found")
-#}
-
-#packagesExist(cuhdb-qt-lib) {
-#    PKGCONFIG += cuhdb-qt-lib
-#} else {
-#    message("quhdbbrowser: package cuhdb-qt-lib (qt module for cumbia-hdb) not found")
-#}
-
+exists($${INSTALL_ROOT}/include/qumbia-tango-controls/qumbia-tango-controls.pri) {
+    include($${INSTALL_ROOT}/include/qumbia-tango-controls/qumbia-tango-controls.pri)
+}
 
 include($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri)
 

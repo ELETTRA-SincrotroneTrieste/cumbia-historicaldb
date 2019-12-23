@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DCUMBIA_DEBUG_OUTPUT=1 -DCUMBIA_QTCONTROLS_PLUGIN_DIR="\"/usr/local/cumbia-libs/lib/qumbia-plugins\"" -DCUMBIA_QTCONTROLS_VERSION_STR="\"1.1.0\"" -DCUMBIA_QTCONTROLS_VERSION=0x010100 -DQT_DEPRECATED_WARNINGS -DPROFILES_DIR="\"/home/giacomo/.config/cumbia-hdb\"" -DQT_CONCURRENT_LIB -DQT_PRINTSUPPORT_LIB -DQT_SVG_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DCUMBIA_DEBUG_OUTPUT=1 -DCUMBIA_QTCONTROLS_PLUGIN_DIR="\"/usr/local/cumbia-libs/lib/qumbia-plugins\"" -DCUMBIA_QTCONTROLS_VERSION_STR="\"1.1.0\"" -DCUMBIA_QTCONTROLS_VERSION=0x010100 -DQT_DEPRECATED_WARNINGS -DQT_CONCURRENT_LIB -DQT_PRINTSUPPORT_LIB -DQT_SVG_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -std=c++17 -Wall -O2 -std=gnu++1z -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I/usr/local/cumbia-libs/include/cumbia-qtcontrols -I/usr/local/qwt-6.1.3/include -isystem /usr/include/qwt -I/usr/local/cumbia-libs/include/cumbia -isystem /usr/include/qt5/QtConcurrent -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtPrintSupport -isystem /usr/include/qt5/QtSvg -isystem /usr/include/qt5/QtOpenGL -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -Imoc -isystem /usr/include/libdrm -I/usr/lib64/qt5/mkspecs/linux-g++
+INCPATH       = -I. -I/usr/local/cumbia-libs/include/cumbia-qtcontrols -I/usr/local/qwt-6.1.3/include -isystem /usr/include/qwt -I/usr/local/cumbia-libs/include/cumbia -isystem /usr/include/qt5/QtConcurrent -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtPrintSupport -isystem /usr/include/qt5/QtSvg -isystem /usr/include/qt5/QtOpenGL -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -I/usr/local/hdbextractor/include -I/usr/local/cumbia-libs/include/cumbia-hdb -Imoc -isystem /usr/include/libdrm -I/usr/lib64/qt5/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake
 DEL_FILE      = rm -rf
 CHK_DIR_EXISTS= test -d
@@ -40,7 +40,7 @@ DISTNAME      = hdb-db-profile-manager1.1.0
 DISTDIR = /archivi/devel/utils/git/cppqtclients/cumbia-historicaldb/cumbia-historicaldb-qt/hdb-db-profile-manager/obj/hdb-db-profile-manager1.1.0
 LINK          = g++
 LFLAGS        = -Wl,-O1 -fPIC
-LIBS          = $(SUBLIBS) -L/usr/local/cumbia-libs/lib -lcumbia -lcumbia-qtcontrols -L/usr/local/qwt-6.1.3/lib -lqwt -lQt5Concurrent -lQt5PrintSupport -lQt5Svg -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core /usr/lib64/libQt5OpenGL.so /usr/lib64/libQt5PrintSupport.so /usr/lib64/libQt5Widgets.so /usr/lib64/libQt5Gui.so /usr/lib64/libQt5Core.so /usr/lib64/libGL.so -lpthread   
+LIBS          = $(SUBLIBS) -L/usr/local/cumbia-libs/lib -lcumbia-qtcontrols -L/usr/local/qwt-6.1.3/lib -lqwt -lQt5Concurrent -lQt5PrintSupport -lQt5Svg -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -L/usr/local/hdbextractor/lib -lcumbia-hdb -lhdbextractor++ -lcumbia /usr/lib64/libQt5OpenGL.so /usr/lib64/libQt5PrintSupport.so /usr/lib64/libQt5Widgets.so /usr/lib64/libQt5Gui.so /usr/lib64/libQt5Core.so /usr/lib64/libGL.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -858,7 +858,8 @@ obj/main.o: main.cpp /usr/local/cumbia-libs/include/cumbia/cumacros.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/main.o main.cpp
 
 obj/profile.o: profile.cpp profile.h \
-		/usr/local/cumbia-libs/include/cumbia/cumacros.h
+		/usr/local/cumbia-libs/include/cumbia/cumacros.h \
+		/usr/local/cumbia-libs/include/cumbia-hdb/cumbiahdbworld.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/profile.o profile.cpp
 
 obj/qrc_hdb-db-profile-manager.o: qrc_hdb-db-profile-manager.cpp 

@@ -20,6 +20,8 @@ public:
 
     void extract_data(const std::vector<XVariant> &dbdata, CuData& res) const;
 
+    std::string getDbProfilesDir() const;
+
 private:
     std::vector<std::string> m_src_patterns;
 };

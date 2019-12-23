@@ -9,6 +9,19 @@ exists($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri) {
     message("hdb-db-profile-manager: cumbia-qtcontrols library must be installed under INSTALL_ROOT")
 }
 
+# PKG_CONFIG += cumbia-hdb below is enough but if hdbextractor++ is missing
+# the error message says "package cumbia-hdb is required", which is not correct
+# So, output a more specific error if hdbextractor++ is not found
+!packagesExist(hdbextractor++) {
+    error("hdb-db-profile-manager hdbextractor++ library is required")
+}
+
+packagesExist(cumbia-hdb) {
+    PKGCONFIG += cumbia-hdb
+}else{
+    error("hdb-db-profile-manager: package cumbia-hdb is required")
+}
+
 QT -= gui
 
 CONFIG += c++11 console
@@ -21,10 +34,6 @@ CONFIG -= QT_NO_DEBUG_OUTPUT
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
-PROFILES_DIR=$$(HOME)/.config/cumbia-hdb
-DEFINES += PROFILES_DIR=\"\\\"$${PROFILES_DIR}\\\"\"
-message("hdb-db-profile-manager: profiles dir: $${PROFILES_DIR}")
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

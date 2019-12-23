@@ -41,7 +41,7 @@ public:
  *     the poller is not started and the activity is suspended (repeat will return -1).
  */
 CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
-    : CuActivity(token)
+    : CuIsolatedActivity(token)
 {
     d = new CuHdbActivityPrivate;
     d->repeat = -1;
@@ -204,20 +204,6 @@ void CuHdbFetchActivity::event(CuActivityEvent *e)
 int CuHdbFetchActivity::getType() const
 {
     return CuHdbFetchActivityType;
-}
-
-/*! \brief returns the polling period, in milliseconds
- *
- * @return the polling period, in milliseconds
- *
- * @implements CuActivity::repeat
- */
-int CuHdbFetchActivity::repeat() const
-{
-    assert(d->my_thread_id == pthread_self());
-    int ret;
-    d->exiting ? ret = -1 : ret = d->repeat;
-    return ret;
 }
 
 void CuHdbFetchActivity::onSourceProgressUpdate(const char *name, double percent) {

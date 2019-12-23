@@ -1,7 +1,7 @@
 #ifndef CUHDBGENACTIVITY_H
 #define CUHDBGENACTIVITY_H
 
-#include <cuactivity.h>
+#include <cuisolatedactivity.h>
 #include <cuactivityevent.h>
 #include <list>
 #include <cuhdbactioni.h>
@@ -46,7 +46,7 @@ class CuHdbActivityPrivate;
  * @see CuTReader::stop
  *
  */
-class CuHdbFetchActivity : public CuActivity, public HdbExtractorListener
+class CuHdbFetchActivity : public CuIsolatedActivity, public HdbExtractorListener
 {
 public:
 
@@ -76,8 +76,6 @@ public:
     void event(CuActivityEvent *e);
 
     int getType() const;
-
-    int repeat() const;
 
     // HdbExtractorListener interface
 public:
