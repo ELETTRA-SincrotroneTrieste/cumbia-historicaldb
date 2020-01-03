@@ -44,3 +44,7 @@ DISTFILES += \
     README.md
 
 
+inst.files = $${TARGET}
+inst.path = $${INSTALL_ROOT}/bin
+
+INSTALLS += inst

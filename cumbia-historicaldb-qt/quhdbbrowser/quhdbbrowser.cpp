@@ -18,7 +18,7 @@
 #include <cutango-world.h>
 #include <cutreader.h>
 #include <cutcontrolsreader.h>
-
+#include <cucontext.h>
 #endif
 
 QuHdbBrowser::QuHdbBrowser(QWidget *parent)
@@ -31,21 +31,19 @@ QuHdbBrowser::QuHdbBrowser(QWidget *parent)
             db_profile = a.remove("--db-profile=");
         }
     }
+    CuPluginLoader pl;
+    QObject *o;
+    CuHdbPlugin_I *hdb_p = pl.get<CuHdbPlugin_I>("cuhdb-qt-plugin.so", &o);
+    if(hdb_p) {
+        m_cupool->registerCumbiaImpl("hdb", hdb_p->getCumbia());
+        m_cupool->setSrcPatterns("hdb", hdb_p->getSrcPatterns());
+        m_fpool.registerImpl("hdb", *hdb_p->getReaderFactory());
+    }
     if(!db_profile.isEmpty()) {
-        CuPluginLoader pl;
-        QObject *o;
-        CuHdbPlugin_I *hdb_p = pl.get<CuHdbPlugin_I>("cuhdb-qt-plugin.so", &o);
-        if(hdb_p) {
             hdb_p->setDbProfile(db_profile);
-            m_cupool->registerCumbiaImpl("hdb", hdb_p->getCumbia());
-            m_cupool->setSrcPatterns("hdb", hdb_p->getSrcPatterns());
-            m_fpool.registerImpl("hdb", *hdb_p->getReaderFactory());
-        }
     }
     else {
-        QString msg("QuHdbBrowser: parameter --settings=dbconfig.dat is missing");
-        QMessageBox::information(this, "Usage", msg);
-        setDisabled(true);
+        printf("\e[1;33m* \e[0musing \e[1;33mdefault\e[0m database profile, if available\n");
     }
 
 #ifdef QUMBIA_TANGO_CONTROLS_VERSION
@@ -120,6 +118,7 @@ void QuHdbBrowser::get() {
                 t1.toString("yyyy-MM-dd hh:mm:ss") + "," + t2.toString("yyyy-MM-dd hh:mm:ss") + ")";
     }
     if(t2 > t1) {
+//        findChild<QuTrendPlot *>()->getContext()->setOptions(CuData("refresh_mode", CuTReader::PolledRefresh));
         findChild<QuTrendPlot *>()->setSources(srcs + live);
     }
 }

@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QDateTime>
 #include <cumbiahdbworld.h>
+#include "../../lib/cuhdb_config.h"
 
 Option::Option()
 {
@@ -34,12 +35,11 @@ QString Profile::name() const {
 }
 
 bool Profile::load(const QString &name, bool is_template) {
-    CumbiaHdbWorld wo;
     m_optionsList.clear();
     m_map.clear();
     m_name = name;
     QString fpath;
-    is_template ? fpath = name : fpath = QString("%1/%2.dat").arg(wo.getDbProfilesDir().c_str()).arg(name);
+    is_template ? fpath = name : fpath = profilePath(name);
     m_errMsg.clear();
     QFile file(fpath);
     if(file.open(QIODevice::ReadOnly|QIODevice::Text)) {
@@ -171,7 +171,7 @@ bool Profile::save()
     if(!ok)
         m_errMsg = QString("hdb-db-profile-manager: Profile.save: failed to create directory \"%1\"").arg(dirpath);
 
-    QString fpath = QString("%1/%2.dat").arg(dirpath).arg(m_name);
+    QString fpath = QString("%1/%2.%3").arg(dirpath).arg(m_name).arg(PROFILES_EXTENSION);
     QFile file(fpath);
     ok = file.open(QIODevice::WriteOnly|QIODevice::Text);
     if(ok) {
@@ -181,6 +181,10 @@ bool Profile::save()
         foreach(QString s, m_optionsList) {
             const Option &o = m_map[s];
             out << s << " = " << o.value << "\n";
+        }
+        // see how many profiles are currently defined
+        if(profiles_dir.entryInfoList(QStringList() << QString("*.%1").arg(PROFILES_EXTENSION)).size() == 1) { // it becomes the default
+            setDefault(m_name);
         }
         file.close();
     }
@@ -197,24 +201,98 @@ QString Profile::errorMessage() const {
 bool Profile::deleteProfile(const QString &name)
 {
     m_errMsg.clear();
-    QString fpath = QString("%1/%2.dat").arg(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir())).arg(name);
+    QString dirpath = QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir());
+    QDir profiles_dir(dirpath);
+    QString fpath = profilePath(name);
     QFile file(fpath);
     bool ok = file.exists();
-    if(ok)
+    if(ok) {
         ok = file.remove();
-    if(!ok)
+        if(ok) { // remove symlink if points to name
+            fpath = defaultLinkPath();
+            QFile lnk(fpath);
+            QFileInfo fi(lnk);
+            if(fi.exists() && fi.isSymLink() && fi.symLinkTarget() == fpath) {
+                ok = lnk.remove();
+            }
+            // only one profile remains? make it the default one
+            QStringList filter = QStringList() << QString("*.%1").arg(PROFILES_EXTENSION);
+            if(profiles_dir.entryInfoList(filter).size() == 1) { // it becomes the default
+                QString lone_profile = profiles_dir.entryInfoList(filter).first().fileName();
+                ok = setDefault(lone_profile);
+            }
+        }
+    }
+    else
         m_errMsg = QString("hdb-db-profile-manager: Profile.deleteProfile failed to remove file \"%1\"").arg(fpath);
     return ok;
 }
 
-QStringList Profile::list() const
+QStringList Profile::list(QString& default_prof) const
 {
-    QStringList li;
+    QStringList prlist;
+    QString default_profile;
+    QFileInfoList li;
     QDir profiles_dir(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir()));
     if(profiles_dir.exists()) {
-        li = profiles_dir.entryList(QStringList() << "*.dat");
-        for(int i = 0; i < li.size(); i++)
-            li[i].remove(".dat");
+        QString ext = QString(".%1").arg(PROFILES_EXTENSION);
+        QFile lnk_default(profiles_dir.absoluteFilePath(defaultLinkNam()));
+        if(lnk_default.exists() && QFileInfo(lnk_default).isSymLink())
+            default_profile = QFileInfo(lnk_default).symLinkTarget();
+        li = profiles_dir.entryInfoList(QStringList() << "*" + ext);
+        for(int i = 0; i < li.size(); i++) {
+            QString fnam = li[i].fileName();
+            if(fnam != defaultLinkNam() && fnam.endsWith(ext)) {
+                fnam.remove(ext);
+                prlist << fnam;
+            }
+            if(li[i].absoluteFilePath() == default_profile)
+                default_prof = fnam;
+        }
     }
-    return li;
+    return prlist;
+}
+
+bool Profile::setDefault(const QString &profile)
+{
+    m_errMsg.clear();
+    QString fpath = profilePath(profile);
+    QFile file(fpath);
+    bool ok = file.exists();
+    if(ok) {
+        fpath = defaultLinkPath();
+        QFile lnk(fpath);
+        QFileInfo fi(lnk);
+        if(fi.exists() && fi.isSymLink())
+            ok = lnk.remove();
+        if(ok) {
+            ok = file.link(fpath);
+            if(!ok)
+                m_errMsg = "Profile.setDefault: failed to create symlink to " + fpath;
+            else
+                printf("\e[1;32m*\e[0m %s --> \e[0;32mdefault\e[0m\n", qstoc(profile));
+        }
+        else {
+            m_errMsg = "Profile.setDefault: failed to remove old link";
+        }
+    }
+    else
+        m_errMsg = "Profile: profile \"" + profile + "\" does not exist";
+
+    return m_errMsg.isEmpty();
+}
+
+QString Profile::defaultLinkNam() const {
+    return QString("%1.%2").arg(PROFILE_DEFAULT_NAME).arg(PROFILES_EXTENSION);
+}
+
+QString Profile::defaultLinkPath() const
+{
+    return QString("%1/%2").arg(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir())).arg(defaultLinkNam());
+}
+
+QString Profile::profilePath(const QString& profile_name) const
+{
+    return QString("%1/%2.%3").arg(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir()))
+                .arg(profile_name).arg(PROFILES_EXTENSION);
 }

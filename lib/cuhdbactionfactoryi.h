@@ -19,7 +19,8 @@ class CumbiaHdb;
 class CuHdbActionFactoryI
 {
 public:
-    CuHdbActionFactoryI() {}
+
+    virtual ~CuHdbActionFactoryI() {}
 
     /**
      * Pure virtual method that must be implemented by subclasses to return a valid CuTangoActionI

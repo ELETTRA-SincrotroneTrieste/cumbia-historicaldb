@@ -15,7 +15,6 @@
 int main(int argc, char *argv[])
 {
     bool ok = true;
-    bool edit = false;
     QCoreApplication app(argc, argv);
     QTextStream txtin(stdin);
     QCommandLineParser parser;
@@ -28,9 +27,14 @@ int main(int argc, char *argv[])
     QCommandLineOption editProfile(QStringList() << "e" << "edit-profile",
                                    "edit an existing profile", "profile");
     parser.addOption(editProfile);
-    QCommandLineOption delProfile(QStringList() << "d" << "delete-profile",
-                                  "delete a profile", "profile");
+    QCommandLineOption delProfile(QStringList() << "r" << "remove-profile",
+                                  "remove a profile", "profile");
     parser.addOption(delProfile);
+
+    QCommandLineOption setDefault(QStringList() << "d" << "set-default",
+                                  "delete a profile", "profile");
+    parser.addOption(setDefault);
+
 
     QCommandLineOption listProfiles(QStringList() << "l" << "list-profiles",
                                     "list profiles");
@@ -47,77 +51,80 @@ int main(int argc, char *argv[])
     else if(parser.isSet(editProfile)) {
         ok = out_profile.load(parser.value(editProfile));
         if(!ok)
-            perr("no profile exists with name \"%s\"", qPrintable(out_profile.name()));
+            perr("error loading profile \"%s\": %s", qPrintable(out_profile.name()), qPrintable(out_profile.errorMessage()));
     }
-    if(ok && (parser.isSet(addProfile) || parser.isSet(editProfile)) )
+    if(parser.isSet(addProfile) || parser.isSet(editProfile))
     {
-        ok = template_profile.load(QString(":%1").arg(TEMPLATE_FILENAM), true);
-        if(!ok) {
-            perr("hdb-db-profile-manager: error loading template \"%s\": %s", TEMPLATE_FILENAM,
-                 qstoc(template_profile.errorMessage()));
-        }
-        else {
-            foreach(QString key, template_profile.getOptionkeys()) {
-                QString value, edit_value;
-                int choice = 0;
-                char type[16];
-                const Option &o = template_profile.getOption(key);
-                printf("%s", qstoc(o.optionDesc));
-                if(out_profile.hasKey(key)) {
-                    edit_value = out_profile.valueAsStr(key);
-                }
-                strncpy(type, o.optionNames[o.optionType], 15);
-                printf("\e[1;32m%s\e[0m = ", qstoc(key));
-                if(!edit_value.isEmpty())
-                    printf(" [ \e[1;34m%s\e[0m ]: ", qstoc(edit_value));
-
-                if(o.optionType == Option::Enum) {
-                    // print options
-                    for(int i = 0; i < o.options.size(); i++) {
-                        QString op = o.options[i];
-                        i == o.default_option_idx ? printf("%s [%d] [default]\n", qstoc(op.trimmed()), i+1) :
-                                                    printf("%s [%d]\n", qstoc(op.trimmed()), i+1);
+        if(ok) {
+            if(!template_profile.load(QString(":%1").arg(TEMPLATE_FILENAM), true)) {
+                perr("hdb-db-profile-manager: error loading template \"%s\": %s", TEMPLATE_FILENAM,
+                     qstoc(template_profile.errorMessage()));
+            }
+            else {
+                foreach(QString key, template_profile.getOptionkeys()) {
+                    QString value, edit_value;
+                    int choice = 0;
+                    char type[16];
+                    const Option &o = template_profile.getOption(key);
+                    printf("%s", qstoc(o.optionDesc));
+                    if(out_profile.hasKey(key)) {
+                        edit_value = out_profile.valueAsStr(key);
                     }
-                    printf("[ %s ] > ", type);
-                    choice = txtin.readLine().toInt(&ok) - 1;
-                    ok = ok && choice >= 0 && choice < o.options.size();
-                    if(!ok)
-                        edit_value.isEmpty() ? choice = o.default_option_idx : choice = -1;
+                    strncpy(type, o.optionNames[o.optionType], 15);
+                    printf("\e[1;32m%s\e[0m = ", qstoc(key));
+                    if(!edit_value.isEmpty())
+                        printf(" [ \e[1;34m%s\e[0m ]: ", qstoc(edit_value));
 
-                    choice > -1 ? value = o.options[choice] : value = edit_value;
-                }
-                else if(o.optionType == Option::Integer) {
-                    do {
+                    if(o.optionType == Option::Enum) {
+                        // print options
+                        for(int i = 0; i < o.options.size(); i++) {
+                            QString op = o.options[i];
+                            i == o.default_option_idx ? printf("%s [%d] [default]\n", qstoc(op.trimmed()), i+1) :
+                                                        printf("%s [%d]\n", qstoc(op.trimmed()), i+1);
+                        }
                         printf("[ %s ] > ", type);
-                        value = txtin.readLine();
-                        value.toInt(&ok);
-                    } while(!ok && edit_value.isEmpty());
-                }
-                else if(o.optionType == Option::Float) {
-                    do {
-                        printf("[ %s ] > ", type);
-                        value = txtin.readLine();
-                        value.toDouble(&ok);
-                    } while(!ok && edit_value.isEmpty());
-                }
-                else if(o.optionType == Option::String) {
-                    do {
-                        printf("[ %s ] > ", type);
-                        value = txtin.readLine();
-                        ok = !value.isEmpty();
-                    } while(!ok && edit_value.isEmpty());
-                }
-                ok ? out_profile.set(key, value) : out_profile.set(key, edit_value);
-            } // foreach(QString key, template_profile.getOptionkeys
-        } // ok loading template
+                        choice = txtin.readLine().toInt(&ok) - 1;
+                        ok = ok && choice >= 0 && choice < o.options.size();
+                        if(!ok)
+                            choice = -1;
+                        if(choice > -1) value = o.options[choice];
+                        else if(!edit_value.isEmpty()) value = edit_value;
+                        else value = o.options[o.default_option_idx];
+                        printf("-set value %s for enum\n", qstoc(value));
+                    }
+                    else if(o.optionType == Option::Integer) {
+                        do {
+                            printf("[ %s ] > ", type);
+                            value = txtin.readLine();
+                            value.toInt(&ok);
+                        } while(!ok && edit_value.isEmpty());
+                    }
+                    else if(o.optionType == Option::Float) {
+                        do {
+                            printf("[ %s ] > ", type);
+                            value = txtin.readLine();
+                            value.toDouble(&ok);
+                        } while(!ok && edit_value.isEmpty());
+                    }
+                    else if(o.optionType == Option::String) {
+                        do {
+                            printf("[ %s ] > ", type);
+                            value = txtin.readLine();
+                            ok = !value.isEmpty();
+                        } while(!ok && edit_value.isEmpty());
+                    }
+                    !value.isEmpty() ? out_profile.set(key, value) : out_profile.set(key, edit_value);
+                } // foreach(QString key, template_profile.getOptionkeys
+            } // ok loading template
 
-        bool saved = out_profile.save();
-        if(!saved) {
-            perr("hdb-db-profile-manager: failed to save profile: \"%s\": %s",
-                 qstoc(parser.value(editProfile)), qstoc(out_profile.errorMessage()));
-        }
-        else
-            printf("\e[1;32m*\e[0m saved profile \e[0;3m%s\e[0m\n", qstoc(parser.value(editProfile)));
+            bool saved = out_profile.save();
+            if(!saved) {
+                perr("hdb-db-profile-manager: failed to save profile: \"%s\": %s",
+                     qstoc(parser.value(editProfile)), qstoc(out_profile.errorMessage()));
+            }
+            else
+                printf("\e[1;32m*\e[0m saved profile \e[0;3m%s\e[0m\n", qstoc(parser.value(editProfile)));
+        } // if ok
     } // parser.isSet( edit or new profile)
     else if(parser.isSet(delProfile)) {
         Profile f;
@@ -127,9 +134,11 @@ int main(int argc, char *argv[])
     }
     else if(parser.isSet(listProfiles)) {
         Profile f;
-        QStringList list = f.list();
+        QString default_profilenam;
+        QStringList list = f.list(default_profilenam);
         foreach(QString p, list) {
-            printf("%s\n", qPrintable(p));
+            p == default_profilenam ? printf("%s [\e[1;32m default\e[0m ]\n", qPrintable(p))
+                                    : printf("%s\n", qPrintable(p));
         }
     }
     else if(parser.positionalArguments().size() > 0) {
@@ -144,7 +153,12 @@ int main(int argc, char *argv[])
         }
         else
             printf("\e[1;33m*\e[0m no such profile \"%s\"\n", qPrintable(pnam));
-
+    }
+    else if(parser.isSet(setDefault)) {
+        ok = out_profile.setDefault(parser.value(setDefault));
+        if(!ok)
+            perr("error setting default profile \"%s\": %s", qPrintable(parser.value(setDefault)),
+                 qstoc(out_profile.errorMessage()));
     }
     else
         printf("%s\n", qPrintable(parser.helpText()));

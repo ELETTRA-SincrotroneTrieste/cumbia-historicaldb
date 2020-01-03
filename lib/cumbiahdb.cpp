@@ -1,4 +1,5 @@
 #include "cumbiahdb.h"
+#include "cuhdb_config.h"
 #include <cumacros.h>
 #include <cudatalistener.h>
 #include <cuserviceprovider.h>
@@ -57,6 +58,8 @@ void CumbiaHdb::addAction(const std::string &source, CuDataListener *l, const Cu
         CuHdbActionI *a = af->findActive(source, f.getType());
         if(!a) {
             a = af->registerAction(source, f, this);
+            if(!d->hdbx_settings)
+                setDbProfile(PROFILE_DEFAULT_NAME);
             a->setHdbXSettings(d->hdbx_settings);
             a->start();
         }
@@ -96,7 +99,7 @@ CuThreadsEventBridgeFactory_I *CumbiaHdb::getThreadEventsBridgeFactory() const
 
 void CumbiaHdb::setDbProfile(const string &db_profile_name) {
     CumbiaHdbWorld world;
-    std::string fnam =  world.getDbProfilesDir() + "/" + db_profile_name + ".dat";
+    std::string fnam =  world.getDbProfilesDir() + "/" + db_profile_name + "." + std::string(PROFILES_EXTENSION);
     HdbXSettings* hdbxs = new HdbXSettings();
     hdbxs->loadFromFile(fnam.c_str());
     if(hdbxs->hasError()) {
@@ -106,7 +109,6 @@ void CumbiaHdb::setDbProfile(const string &db_profile_name) {
     }
     else
         setHdbXSettings(hdbxs);
-
 }
 
 /*!

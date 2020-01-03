@@ -37,7 +37,11 @@ public:
     bool save();
     QString errorMessage() const;
     bool deleteProfile(const QString& name);
-    QStringList list() const;
+    QStringList list(QString& default_prof) const;
+    bool setDefault(const QString& profile);
+    QString defaultLinkNam() const;
+    QString defaultLinkPath() const;
+    QString profilePath(const QString& name) const;
 
 private:
     QStringList m_optionsList; // store the options order
