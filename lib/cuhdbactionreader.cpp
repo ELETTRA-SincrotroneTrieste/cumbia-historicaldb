@@ -79,7 +79,7 @@ void CuHdbActionReader::setOptions(const CuData &options) {
  */
 void CuHdbActionReader::onResult(const CuData &data)
 {
-//    bool err = data["err"].toBool();
+    //    bool err = data["err"].toBool();
     bool a_exit = data["exit"].toBool(); // activity exit flag
     // iterator can be invalidated if listener's onUpdate unsets source: use a copy
     std::set<CuDataListener *> lis_copy = d->listeners;
@@ -95,7 +95,7 @@ void CuHdbActionReader::onResult(const CuData &data)
     if(d->exit && a_exit)
     {
         CuHdbActionFactoryService * af = static_cast<CuHdbActionFactoryService *>(d->cumbia_hdb->getServiceProvider()
-                                                                            ->get(static_cast<CuServices::Type>(CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
+                                                                                  ->get(static_cast<CuServices::Type>(CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
         af->unregisterAction(d->hdb_src.getName(), getType());
         d->listeners.clear();
         delete this;
@@ -163,8 +163,8 @@ void CuHdbActionReader::sendData(const CuData &data)
  */
 void CuHdbActionReader::getData(CuData &d_inout) const
 {
-//    if(d_inout.containsKey("mode"))
-//        d_inout["mode"] = refreshModeStr();
+    //    if(d_inout.containsKey("mode"))
+    //        d_inout["mode"] = refreshModeStr();
 }
 
 /*
@@ -208,15 +208,23 @@ void CuHdbActionReader::setHdbXSettings(HdbXSettings *hdbs) {
 
 void CuHdbActionReader::start()
 {
-     m_startFetchHdbActivity();
+    m_startFetchHdbActivity();
 }
 
 void CuHdbActionReader::m_startFetchHdbActivity()
 {
     CuData at(d->cumbia_hdb->getDbParams());
     at["src"] =  d->hdb_src.getName();
-    at["start_date"] = d->hdb_src.start_date();
-    at["stop_date"] = d->hdb_src.stop_date();
+    if(d->hdb_src.getType() == HdbSource::DataFetch) {
+        at["start_date"] = d->hdb_src.start_date();
+        at["stop_date"] = d->hdb_src.stop_date();
+    }
+    else if(d->hdb_src.getType() == HdbSource::FindSources) {
+        at["find_pattern"] = d->hdb_src.find_pattern();
+    }
+    else if(d->hdb_src.getType() == HdbSource::Query) {
+        at["query"] = d->hdb_src.query();
+    }
     at["activity"] = "hdb";
     if(d->options.containsKey("label"))
         at["label"] = d->options["label"].toString();

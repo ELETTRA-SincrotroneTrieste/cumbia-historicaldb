@@ -7,6 +7,7 @@ include(cuhdb-qt-lib.pri)
 TEMPLATE = lib
 TARGET = cuhdb-qt
 INCLUDEPATH += .
+DISTFILES += cuhdb-qt-lib.pri
 
 # You can make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -16,8 +17,10 @@ INCLUDEPATH += .
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += cuhdbreader.h
-SOURCES += cuhdbreader.cpp
+HEADERS += src/cuhdbreader.h \
+    src/quhdbbrowser.h
+SOURCES += src/cuhdbreader.cpp \
+    src/quhdbbrowser.cpp
 
     doc.commands = \
     doxygen \

@@ -8,6 +8,7 @@
 #include <iostream>
 #include <assert.h>
 #include <hdbxsettings.h>
+#include <timeinterval.h>
 #include <cumbiahdbworld.h>
 
 /* @private */
@@ -125,6 +126,7 @@ void CuHdbFetchActivity::execute()
     assert(d->my_thread_id == pthread_self());
     d->exec_cnt++;
     CuData res = getToken();
+    printf("CuHdbFetchActivity.execute: data %s\n", res.toString().c_str());
     m_putInfo(res);
     if(d->hdbx_s == nullptr) {
         res["err"] = true;
@@ -135,24 +137,60 @@ void CuHdbFetchActivity::execute()
         d->hdb_extractor->setHdbXSettings(d->hdbx_s);
         d->hdb_extractor->setUpdateProgressPercent(10);
         bool ok = d->hdb_extractor->connect();
-        if(ok)
-            d->hdb_extractor->getData(res["src"].toString().c_str(), res["start_date"].toString().c_str(),
-                    res["stop_date"].toString().c_str());
-        else {
-            res["err"] = true;
-            res["msg"] = std::string("CuHdbFetchActivity.execute: failed to connect to database host: "
-                                     + d->hdbx_s->get("dbhost") + " user: " + d->hdbx_s->get("dbuser") +
-                                     "pass: " + d->hdbx_s->get("dbpass") + ": " +
-                                     std::string(d->hdb_extractor->getErrorMessage()));
-            perr("CuHdbFetchActivity.execute: %s", res.toString().c_str());
+        if(res.containsKey("start_date") && res.containsKey("stop_date")) {
+            TimeInterval tint(res["start_date"].toString().c_str(), res["stop_date"].toString().c_str());
+            if(ok)
+                d->hdb_extractor->getData(res["src"].toString().c_str(), &tint);
+            else {
+                res["err"] = true;
+                res["msg"] = std::string("CuHdbFetchActivity.execute: failed to connect to database host: "
+                                         + d->hdbx_s->get("dbhost") + " user: " + d->hdbx_s->get("dbuser") +
+                                         "pass: " + d->hdbx_s->get("dbpass") + ": " +
+                                         std::string(d->hdb_extractor->getErrorMessage()));
+                perr("CuHdbFetchActivity.execute: %s", res.toString().c_str());
+            }
+            res["err"] = (d->hdb_extractor->hasError());
+            if(res["err"].toBool())
+                res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
+            if(ok) {
+                ok = d->hdb_extractor->findErrors(res["src"].toString().c_str(), &tint);
+            }
+            if(!ok) {
+                res["err"] = true;
+                res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
+            }
+            if(!ok) // publish result if !ok
+                publishResult(res);
+        } // res.containsKeys start and stop date
+        else if(res.containsKey("find_pattern")) {
+            // find sources matching a given pattern
+            std::list<std::string> srcs;
+            ok = d->hdb_extractor->findSources(res["find_pattern"].toString().c_str(), srcs);
+            if(ok) {
+                res["sources"] = std::vector<std::string>(srcs.begin(), srcs.end());
+                publishResult(res);   // publish result
+            }
+            else {
+                res["err"] = true;
+                res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
+            }
         }
-        res["err"] = (d->hdb_extractor->hasError());
-        if(res["err"].toBool())
-            res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
+        else if(res.containsKey("query")) {
+            Result *result;
+            double elapsed;
+            ok = d->hdb_extractor->query(res["query"].toString().c_str(), result, &elapsed);
+            res["err"] = !ok;
+            if(!ok)
+                res["msg"] = d->hdb_extractor->getErrorMessage();
+            else {
+                CumbiaHdbWorld w;
+                // fill row_count, column_count, columns, result
+                w.extract_data(result, elapsed, res);
+            }
+            publishResult(res);   // publish result
+        }
     }
 
-    if(res["err"].toBool())
-        publishResult(res);
 }
 
 /*! \brief the implementation of the CuActivity::onExit hook
@@ -226,7 +264,8 @@ void CuHdbFetchActivity::onExtractionFinished(int totalRows, double elapsed)
 
 void CuHdbFetchActivity::onSourceExtractionFinished(const char *name, int totalRows, double elapsed)
 {
-    CuData res;res["src"] = std::string(name);
+    CuData res;
+    res["src"] = std::string(name);
     res["progress"] = 100;
     res["elapsed"] = elapsed;
     res["err"] = false;
