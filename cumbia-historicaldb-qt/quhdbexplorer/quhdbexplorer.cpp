@@ -13,6 +13,7 @@
 #include <cuhistoricaldbplugin_i.h>
 #include <QCheckBox>
 #include <QSettings>
+#include <QRadioButton>
 
 
 #ifdef QUMBIA_TANGO_CONTROLS_VERSION
@@ -22,11 +23,18 @@
 #include <cutcontrolsreader.h>
 #include <cucontext.h>
 #include <quhdbbrowser.h>
+#ifdef HAS_QUTIMEARRAY3D
+
+// the following is provided by the qutimearray3dplotplugin plugin
+#include <qutimearray3dplotplugin_i.h>
+#endif
+
 #endif
 
 QuHdbExplorer::QuHdbExplorer(QWidget *parent)
     : QWidget(parent)
 {
+    m_surface = nullptr;
     m_cupool = new CumbiaPool();
     QString db_profile;
     foreach(QString a, qApp->arguments()) {
@@ -43,11 +51,17 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
         m_fpool.registerImpl("hdb", *hdb_p->getReaderFactory());
     }
     if(!db_profile.isEmpty()) {
-            hdb_p->setDbProfile(db_profile);
+        hdb_p->setDbProfile(db_profile);
     }
     else {
         printf("\e[1;33m* \e[0musing \e[1;33mdefault\e[0m database profile, if available\n");
     }
+
+    m_ta3d_plugin = nullptr;
+#ifdef HAS_QUTIMEARRAY3D
+    QObject *o3d;
+    m_ta3d_plugin = pl.get<QuTimeArray3DPlotPlugin_I>("qutimearray3dplotplugin.so", &o3d);
+#endif
 
 #ifdef QUMBIA_TANGO_CONTROLS_VERSION
     CumbiaTango *cut = new CumbiaTango(new CuThreadFactoryImpl(), new QThreadsEventBridgeFactory());
@@ -57,6 +71,8 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
     m_fpool.setSrcPatterns("tango", CuTangoWorld().srcPatterns());
 #endif
 
+    // grid layout
+    QGridLayout *glo = new QGridLayout(this);
     QSettings s;
     QDateTimeEdit *t1 = new QDateTimeEdit(this);
     QDateTimeEdit *t2 = new QDateTimeEdit(this);
@@ -65,7 +81,7 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
     s.contains("STOP_DT") ? t2->setDateTime(s.value("STOP_DT").toDateTime()) :
                             t2->setDateTime(QDateTime::currentDateTime());
     s.contains("START_DT") ? t1->setDateTime(s.value("START_DT").toDateTime()) :
-        t1->setDateTime(t2->dateTime().addDays(-1));
+                             t1->setDateTime(t2->dateTime().addDays(-1));
     t1->setDisplayFormat("yyyy.MM.dd hh.mm.ss");
     t1->setCalendarPopup(true);
     t2->setDisplayFormat("yyyy.MM.dd hh.mm.ss");
@@ -74,14 +90,13 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
     QPushButton *pbGet = new QPushButton("Get", this);
     QPushButton *pbNow = new QPushButton("Now", this);
     QPushButton *pbClear = new QPushButton("Clear", this);
+    pbClear->setObjectName("pbClearPlot");
     QLineEdit *lesrc = new QLineEdit(this);
     lesrc->setObjectName("lesrc");
     lesrc->setPlaceholderText("Type one or more space separated source names, e.g. sys/tg_test/1/double_scalar");
-    QuTrendPlot *plot = new QuTrendPlot(this, m_cupool, m_fpool);
-    plot->setYAxisAutoscaleEnabled(true);
-    plot->setShowDateOnTimeAxis(true);
-    plot->setUpperBoundExtra(QwtPlot::xBottom, 0.05);
-    plot->setUpperBoundExtra(QwtPlot::yLeft, 0.2);
+    QPushButton *pbClearSrc = new QPushButton("Clear", this);
+    connect(pbClearSrc, SIGNAL(clicked()), lesrc, SLOT(clear()));
+    QuTrendPlot *plot = m_createTrendPlot();
 
     QLineEdit *leNotes = new QLineEdit(this);
     leNotes->setObjectName("notes");
@@ -90,27 +105,37 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
     leNotes->setVisible(false);
 
     QuHdbBrowser *hdbbro = new QuHdbBrowser(this, m_cupool, m_fpool);
-    QCheckBox *cbScalar = new QCheckBox("Scalars", this);
-    QCheckBox *cbSpectrum = new QCheckBox("Spectrum", this);
-    cbScalar->setChecked(true);
-    cbScalar->setObjectName("cbScalar");
-    connect(cbScalar, SIGNAL(toggled(bool)), this, SLOT(reloadTree()));
-    connect(cbSpectrum, SIGNAL(toggled(bool)), this, SLOT(reloadTree()));
-    cbSpectrum->setObjectName("cbSpectrum");
+    QRadioButton *rbScalar = new QRadioButton("Scalars", this);
+    rbScalar->setChecked(true);
+    rbScalar->setObjectName("rbScalar");
+    connect(rbScalar, SIGNAL(toggled(bool)), this, SLOT(reloadTree()));
     QLineEdit *leFilter = new QLineEdit(this);
     leFilter->setObjectName("leFilter");
     leFilter->setPlaceholderText("filter and click on Reload");
+    leFilter->setText(s.value("TREE_FILTER_TEXT", "").toString());
     QPushButton *pbReloadTree = new QPushButton("Reload", this);
     connect(pbReloadTree, SIGNAL(clicked()), this, SLOT(reloadTree()));
 
     int col = 0;
-    QGridLayout *glo = new QGridLayout(this);
-    glo->addWidget(cbScalar, 0, col, 1, 1);
-    glo->addWidget(cbSpectrum, 0, col + 1, 1, 1);
-    glo->addWidget(pbReloadTree, 0, col + 2, 2, 1);
+    glo->addWidget(rbScalar, 0, col, 1, 1);
+
+    // spectrum support, only if qutimearray3dplot plugin is available
+    if(m_ta3d_plugin != nullptr) {
+        QRadioButton *rbSpectrum = new QRadioButton("Spectrum", this);
+        rbSpectrum->setObjectName("rbSpectrum");
+        connect(rbSpectrum, SIGNAL(toggled(bool)), this, SLOT(reloadTree()));
+        glo->addWidget(rbSpectrum, 0, col + 1, 1, 1);
+        QPushButton *pbConfPlot = new QPushButton("Configure plot", this);
+        pbConfPlot->setObjectName("pbConfPlot");
+        pbConfPlot->setCheckable(true);
+        connect(pbConfPlot, SIGNAL(toggled(bool)), this, SLOT(show3DPlotConf(bool)));
+        glo->addWidget(pbConfPlot, 0, col + 2, 1, 1);
+    }
+
+    glo->addWidget(pbReloadTree, 1, col + 2, 1, 1);
     glo->addWidget(leFilter, 1, col, 1, 2);
 
-    glo->addWidget(hdbbro, 2, col, 6, 3);
+    glo->addWidget(hdbbro, 2, col, 5, 3);
     col += 3;
     glo->addWidget(leNotes, 0, 0, 1, 7 + col);
     glo->addWidget(plot, 1, col + 0, 5, 7);
@@ -121,7 +146,8 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
     glo->addWidget(pbNow, row, col + 4, 1, 1);
     glo->addWidget(pbGet, row, col + 5, 1, 1);
     glo->addWidget(pbClear, row, col + 6, 1, 1);
-    glo->addWidget(lesrc, 7, 0, 1, col + 6);
+    glo->addWidget(lesrc, 7, 0, 1, col + 5);
+    glo->addWidget(pbClearSrc, 7, col + 5, 1, 1);
 
 #ifdef QUMBIA_TANGO_CONTROLS_VERSION
     QCheckBox *cb = new QCheckBox("Read live", this);
@@ -132,12 +158,18 @@ QuHdbExplorer::QuHdbExplorer(QWidget *parent)
 
     lesrc->setText(s.value("SOURCES", "").toString());
     lesrc->setToolTip("Insert a space separated list of sources");
+    QRadioButton *rbSpectrum = findChild<QRadioButton *>("rbSpectrum");
+    if(rbSpectrum && s.value("SPECTRUM_VIEW", false).toBool())
+        rbSpectrum->setChecked(true);
+    else
+        rbScalar->setChecked(true);
 
     connect(pbNow, SIGNAL(clicked()), this, SLOT(setT2Now()));
     connect(pbGet, SIGNAL(clicked()), this, SLOT(get()));
-    connect(pbClear, SIGNAL(clicked()), plot, SLOT(clearPlot()));
 
     reloadTree();
+
+    resize(1000, 800);
 }
 
 QuHdbExplorer::~QuHdbExplorer()
@@ -147,6 +179,8 @@ QuHdbExplorer::~QuHdbExplorer()
     s.setValue("START_DT", findChild<QDateTimeEdit *>("dte1")->dateTime());
     s.setValue("STOP_DT", findChild<QDateTimeEdit *>("dte2")->dateTime());
     s.setValue("READ_LIVE", findChild<QCheckBox *>("cbLive")->isChecked());
+    s.setValue("TREE_FILTER_TEXT", findChild<QLineEdit *>("leFilter")->text());
+    s.setValue("SPECTRUM_VIEW", !findChild<QRadioButton *>("rbScalar")->isChecked());
 }
 
 void QuHdbExplorer::setT2Now()
@@ -167,32 +201,112 @@ void QuHdbExplorer::get() {
                 t1.toString("yyyy-MM-dd hh:mm:ss") + "," + t2.toString("yyyy-MM-dd hh:mm:ss") + ")";
     }
     if(t2 > t1) {
-        findChild<QuTrendPlot *>()->getContext()->setOptions(CuData("refresh_mode", CuTReader::PolledRefresh));
-        findChild<QuTrendPlot *>()->setSources(srcs + live);
+        QuTrendPlot *tp = findChild<QuTrendPlot *>();
+        if(tp) {
+            tp->getContext()->setOptions(CuData("refresh_mode", CuTReader::PolledRefresh));
+            tp->setSources(srcs + live);
+        }
+        else if(m_surface && srcs.size() > 0) {
+            m_surface->setProperty("source", srcs.first());
+        }
     }
 }
 
 void QuHdbExplorer::reloadTree()
 {
-    bool scalar = findChild<QCheckBox *>("cbScalar")->isChecked();
-    bool spectrum = findChild<QCheckBox *>("cbSpectrum")->isChecked();
+    QRadioButton *rb = findChild<QRadioButton *>("rbScalar");
+    bool scalar = rb && rb->isChecked();
+    bool spectrum = !scalar;
+    QPushButton *confB = findChild<QPushButton *>("pbConfPlot");
+    if(confB) confB->setVisible(spectrum);
     QString filter = findChild<QLineEdit *>("leFilter")->text();
     QString q;
     if(spectrum ^ scalar) {
         q = "select att_name from att_conf,att_conf_data_type "
-                        "WHERE att_conf.att_conf_data_type_id=att_conf_data_type.att_conf_data_type_id "
-                        "AND att_conf_data_type.data_type like ";
+            "WHERE att_conf.att_conf_data_type_id=att_conf_data_type.att_conf_data_type_id "
+            "AND att_conf_data_type.data_type like ";
         spectrum ? q += "'%array%'": q += "'%scalar%'";
     }
-    else if(spectrum && scalar) {
-        q = "select att_name from att_conf,att_conf_data_type WHERE "
-                "att_conf.att_conf_data_type_id=att_conf_data_type.att_conf_data_type_id "
-                "AND (att_conf_data_type.data_type like '%scalar%' OR att_conf_data_type.data_type "
-                "like '%array%')";
+    QGridLayout *glo = findChild<QGridLayout *>();
+    QWidget *plot = findChild<QuTrendPlot *>();
+    if(!plot)
+        plot = findChild<QWidget *>("3dplot_container");
+    int plot_layout_idx = glo->indexOf(plot);
+    int layout_row, layout_col, lo_rowspan, lo_colspan;
+    glo->getItemPosition(plot_layout_idx, &layout_row, &layout_col, &lo_rowspan, &lo_colspan);
+    if(spectrum && plot->objectName() != "3dplot_container") {
+        if(plot) { // plot but not surface
+            glo->removeWidget(plot);
+            delete plot;
+        }
+        if(m_ta3d_plugin) {
+            m_surface = m_ta3d_plugin->create("QuTimeArray3DPlot", nullptr, m_cupool, m_fpool);
+            QWidget *container = QWidget::createWindowContainer(m_surface, this);
+            container->setObjectName("3dplot_container");
+            glo->addWidget(container, layout_row, layout_col, lo_rowspan, lo_colspan);
+        }
+    }
+    else if(scalar && qobject_cast<QuTrendPlot *>(plot) == nullptr) {
+        if(plot) { // plot but not QuTrendPlot
+            glo->removeWidget(plot);
+            if(m_surface) {
+                delete m_surface;
+                m_surface = nullptr;
+            }
+            delete plot;
+        }
+        QuTrendPlot* trendp = m_createTrendPlot();
+        glo->addWidget(trendp, layout_row, layout_col, lo_rowspan, lo_colspan);
+    }
+    else {
+        qDebug() << "scalar" << scalar << "spectrum" << spectrum << "but plot already " << plot;
     }
     if(!filter.isEmpty())
-        q += " AND att_conf.att_name like '%%1%'" + filter;
+        q += QString(" AND att_conf.att_name like '%%1%'").arg(filter);
 
     findChild<QuHdbBrowser *>()->setSource("hdb://query/" + q);
+}
+
+void QuHdbExplorer::show3DPlotConf(bool show) {
+    if(m_ta3d_plugin) {
+        QWidget *confw;
+        show ? confw = m_ta3d_plugin->plotConfigurationWidget(m_surface) : confw = nullptr;
+        if(confw)
+            confw->setObjectName("3dplot_confw");
+        QGridLayout *glo = findChild<QGridLayout *>();
+        QWidget *plot = findChild<QWidget *>("3dplot_container");
+        if(plot) {
+            int r,c, rs, cs, plotidx = glo->indexOf(plot);
+            glo->getItemPosition(plotidx, &r, &c, &rs, &cs);
+            if(show) {
+                glo->removeWidget(plot);
+                glo->addWidget(plot, r, c, rs, cs-1);
+                glo->addWidget(confw, r, c + cs -1, rs, 1);
+            }
+            else {
+                if(findChild<QWidget *>("3dplot_confw")) {
+                    delete findChild<QWidget *>("3dplot_confw");
+                    glo->removeWidget(plot);
+                    glo->addWidget(plot, r, c, rs, cs + 1);
+
+                }
+            }
+        }
+    }
+}
+
+QuTrendPlot *QuHdbExplorer::m_createTrendPlot()
+{
+    QuTrendPlot *plot = findChild<QuTrendPlot *>();
+    if(plot)
+        delete plot;
+    plot = new QuTrendPlot(this, m_cupool, m_fpool);
+    plot->setYAxisAutoscaleEnabled(true);
+    plot->setShowDateOnTimeAxis(true);
+    plot->setUpperBoundExtra(QwtPlot::xBottom, 0.05);
+    plot->setUpperBoundExtra(QwtPlot::yLeft, 0.2);
+    QPushButton *pbClearPlot = findChild<QPushButton *>("pbClearPlot");
+    connect(pbClearPlot, SIGNAL(clicked()), plot, SLOT(clearPlot()));
+    return plot;
 }
 

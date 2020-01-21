@@ -46,6 +46,7 @@ QuHdbBrowser::~QuHdbBrowser()
 void QuHdbBrowser::onUpdate(const CuData &data)
 {
     if(!data["err"].toBool() && data.containsKey("results")) {
+        clear();
         CumbiaHdbWorld w;
         int rows = w.rowCount(data);
         std::vector<std::vector<std::string> > slices;

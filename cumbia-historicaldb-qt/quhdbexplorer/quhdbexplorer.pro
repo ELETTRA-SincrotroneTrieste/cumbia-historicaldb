@@ -12,6 +12,13 @@ exists($${INSTALL_ROOT}/include/qumbia-tango-controls/qumbia-tango-controls.pri)
     include($${INSTALL_ROOT}/include/qumbia-tango-controls/qumbia-tango-controls.pri)
 }
 
+exists(/usr/local/cumbia-libs/include/cumbia-qtcontrols/qutimearray3dplotplugin_i.h){
+    message("quhdbexplorer: detected qutimearray3dplotplugin ")
+    DEFINES += HAS_QUTIMEARRAY3D
+} else {
+    message("quhdbexplorer: qutimearray3dplotplugin is missing: only scalar values can be displayed")
+}
+
 include($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri)
 include($${INSTALL_ROOT}/include/cuhdb-qt-lib/cuhdb-qt-lib.pri)
 

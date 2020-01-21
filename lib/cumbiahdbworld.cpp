@@ -38,11 +38,14 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
     std::vector<double> timestamps, timestamps_ms, nulls_timestamps_ms;
     struct timeval tv;
     double ts;
-    std::vector<double > dvalues;
-    std::vector<long int> livalues;
-    std::vector<unsigned long int> ulivalues;
-    std::vector<bool> bvalues;
-    std::vector<std::string> svalues, errors;
+    std::vector<double > dvalues, dwvalues;
+    std::vector<long int> livalues, liwvalues;
+    std::vector<unsigned long int> ulivalues, uliwvalues;
+    std::vector<bool> bvalues, bwvalues;
+    std::vector<std::string> svalues, swvalues, errors;
+    XVariant::DataType datatyp = XVariant::TypeInvalid;
+    XVariant::DataFormat datafmt = XVariant::FormatInvalid;
+    XVariant::Writable writable = XVariant::WritableInvalid;
 
     for(size_t i = 0; i < dbdata.size(); i++) {
         const XVariant& v = dbdata[i];
@@ -50,10 +53,6 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
         tv = v.getTimevalTimestamp();
         ts = static_cast<time_t>(tv.tv_sec);
         ts += tv.tv_usec * 10e-6;
-        timestamps.push_back(ts);
-        timestamps_ms.push_back(ts * 1000.0);
-        res["time_scale"] = timestamps;
-        res["time_scale_ms"] = timestamps_ms;
         // values
         printf("value %ld type %d format %d is null %d timestamp %f\n", i, v.getType() , v.getFormat(), v.isNull(), ts);
         if(v.hasErrorDesc()) {
@@ -62,67 +61,164 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
             res["notes_time_scale_ms"] = nulls_timestamps_ms;
             res["notes"] = errors;
         }
-        else if(v.getFormat() == XVariant::Scalar) {
-            if(v.getType() == XVariant::Double) {
-                dvalues.push_back(v.toDouble());
-                res["value"] = dvalues;
-            }
-            else if(v.getType() == XVariant::Int) {
-                livalues.push_back(v.toLongInt());
-                res["value"] = livalues;
-            }
-            else if(v.getType() == XVariant::UInt) {
-                ulivalues.push_back(v.toULongInt());
-                res["value"] = ulivalues;
-            }
-            else if(v.getType() == XVariant::Boolean) {
-                bvalues.push_back(v.toBool());
-                res["value"] = bvalues;
-            }
-            else if(v.getType() == XVariant::String) {
-                svalues.push_back(v.toString());
-                res["value"] = svalues;
-            }
-            else {
-                res["err"] = true;
-                res["msg"] = "CumbiaHdbWorld::extract_data: unsupported data type from db";
-            }
-            if(v.getWritable() == XVariant::RW) {
-                // extract "write" value
-                dvalues.clear();
-                svalues.clear();
-                bvalues.clear();
-                ulivalues.clear();
-                livalues.clear();
-                if(v.getType() == XVariant::Double) {
-                    dvalues.push_back(v.toDouble(false));
-                    res["w_value"] = dvalues;
+        else {
+            // no error
+            timestamps.push_back(ts);
+            timestamps_ms.push_back(ts * 1000.0);
+            res["time_scale"] = timestamps;
+            res["time_scale_ms"] = timestamps_ms;
+            datafmt = v.getFormat();
+            datatyp = v.getType();
+            writable = v.getWritable();
+            if(datafmt == XVariant::Scalar) {
+                if(datatyp == XVariant::Double) {
+                    dvalues.push_back(v.toDouble());
+                    res["value"] = dvalues;
                 }
-                else if(v.getType() == XVariant::Int) {
-                    livalues.push_back(v.toLongInt(false));
-                    res["w_value"] = livalues;
+                else if(datatyp == XVariant::Int) {
+                    livalues.push_back(v.toLongInt());
+                    res["value"] = livalues;
                 }
-                else if(v.getType() == XVariant::UInt) {
-                    ulivalues.push_back(v.toULongInt(false));
-                    res["w_value"] = ulivalues;
+                else if(datatyp == XVariant::UInt) {
+                    ulivalues.push_back(v.toULongInt());
+                    res["value"] = ulivalues;
                 }
-                else if(v.getType() == XVariant::Boolean) {
-                    bvalues.push_back(v.toBool(false));
-                    res["w_value"] = bvalues;
+                else if(datatyp == XVariant::Boolean) {
+                    bvalues.push_back(v.toBool());
+                    res["value"] = bvalues;
                 }
-                else if(v.getType() == XVariant::String) {
-                    svalues.push_back(v.toString(false));
-                    res["w_value"] = svalues;
+                else if(datatyp == XVariant::String) {
+                    svalues.push_back(v.toString());
+                    res["value"] = svalues;
                 }
                 else {
                     res["err"] = true;
                     res["msg"] = "CumbiaHdbWorld::extract_data: unsupported data type from db";
                 }
+                if(writable == XVariant::RW) {
+                    // extract "write" value
+                    dvalues.clear();
+                    svalues.clear();
+                    bvalues.clear();
+                    ulivalues.clear();
+                    livalues.clear();
+                    if(datatyp == XVariant::Double) {
+                        dvalues.push_back(v.toDouble(false));
+                        res["w_value"] = dvalues;
+                    }
+                    else if(datatyp == XVariant::Int) {
+                        livalues.push_back(v.toLongInt(false));
+                        res["w_value"] = livalues;
+                    }
+                    else if(datatyp == XVariant::UInt) {
+                        ulivalues.push_back(v.toULongInt(false));
+                        res["w_value"] = ulivalues;
+                    }
+                    else if(datatyp == XVariant::Boolean) {
+                        bvalues.push_back(v.toBool(false));
+                        res["w_value"] = bvalues;
+                    }
+                    else if(datatyp == XVariant::String) {
+                        svalues.push_back(v.toString(false));
+                        res["w_value"] = svalues;
+                    }
+                    else {
+                        res["err"] = true;
+                        res["msg"] = "CumbiaHdbWorld::extract_data: unsupported data type from db";
+                    }
+                } // v.getWritable == RW
+            } // scalar
+            else if(v.getFormat() == XVariant::Vector) {
+                datafmt = XVariant::Vector;
+                datatyp = v.getType();
+                writable = v.getWritable();
+                if(datatyp == XVariant::Double) {
+                    const std::vector<double> dv = v.toDoubleVector();
+                    dvalues.insert(dvalues.end(), dv.begin(), dv.end());
+                    printf("\e[1;33mCuHdbWorld.extract_data: vector type %d (2 = double) timestamps siz %ld"
+                           " new data siz %ld total accumulated %ld\e[0m\n",
+                           datatyp, timestamps_ms.size(), dv.size(), dvalues.size());
+                }
+                else if(datatyp == XVariant::Int) {
+                    const std::vector<long int> iv = v.toLongIntVector();
+                    livalues.insert(livalues.end(), iv.begin(), iv.end());
+                }
+                else if(datatyp == XVariant::UInt) {
+                    const std::vector<unsigned long int> uiv = v.toULongIntVector();
+                    ulivalues.insert(ulivalues.end(), uiv.begin(), uiv.end());
+                }
+                else if(datatyp == XVariant::Boolean) {
+                    const std::vector<bool> biv = v.toBoolVector();
+                    bvalues.insert(bvalues.end(), biv.begin(), biv.end());
+                }
+                else if(datatyp == XVariant::String) {
+                    const std::vector<std::string> svals = v.toStringVector();
+                    svalues.insert(svalues.end(), svals.begin(), svals.end());
+                }
+                else {
+                    res["err"] = true;
+                    res["msg"] = "CumbiaHdbWorld::extract_data: unsupported data type from db";
+                }
+                if(writable == XVariant::RW) {
+                    // extract "write" value
+                    if(v.getType() == XVariant::Double) {
+                        const std::vector<double> dv = v.toDoubleVector(false);
+                        dwvalues.insert(dwvalues.end(), dv.begin(), dv.end());
+                    }
+                    else if(v.getType() == XVariant::Int) {
+                        const std::vector<long int> iv = v.toLongIntVector(false);
+                        liwvalues.insert(liwvalues.end(), iv.begin(), iv.end());
+                    }
+                    else if(v.getType() == XVariant::UInt) {
+                        const std::vector<unsigned long int> uiv = v.toULongIntVector(false);
+                        uliwvalues.insert(uliwvalues.end(), uiv.begin(), uiv.end());
+                    }
+                    else if(v.getType() == XVariant::Boolean) {
+                        const std::vector<bool> biv = v.toBoolVector(false);
+                        bwvalues.insert(bwvalues.end(), biv.begin(), biv.end());
+                    }
+                    else if(v.getType() == XVariant::String) {
+                        const std::vector<std::string> svals = v.toStringVector(false);
+                        swvalues.insert(swvalues.end(), svals.begin(), svals.end());
+                    }
+                }
+            } // vector
+            else {
+                res["err"] = true;
+                res["msg"] = "CumbiaHdbWorld::extract_data: only scalar and vector data is supported for the moment";
             }
+        }
+    }
+
+    if(datafmt == XVariant::Vector) {
+        if(datatyp == XVariant::Double) {
+            res["value"] = dvalues;
+            if(writable == XVariant::RW)
+                res["w_value"] = dwvalues;
+        }
+        else if(datatyp == XVariant::Int) {
+            res["value"] = livalues;
+            if(writable == XVariant::RW)
+                res["w_value"] = liwvalues;
+        }
+        else if(datatyp == XVariant::UInt) {
+            res["value"] = ulivalues;
+            if(writable == XVariant::RW)
+                res["w_value"] = uliwvalues;
+        }
+        else if(datatyp == XVariant::Boolean) {
+            res["value"] = bvalues;
+            if(writable == XVariant::RW)
+                res["w_value"] = bwvalues;
+        }
+        else if(datatyp == XVariant::String) {
+            res["value"] = svalues;
+            if(writable == XVariant::RW)
+                res["w_value"] = swvalues;
         }
         else {
             res["err"] = true;
-            res["msg"] = "CumbiaHdbWorld::extract_data: only scalar data is supported for the moment";
+            res["msg"] = "CumbiaHdbWorld::extract_data: unsupported spectrum data type from db";
         }
     }
 }
@@ -269,11 +365,10 @@ std::string CumbiaHdbWorld::getValue(const CuData &result,
         std::vector<std::string>::const_iterator it = find(cols.begin(), cols.end(), std::string(column_name));
         if(it != cols.end()) {
             idx = distance(cols.begin(), it);
-            if(idx > -1 && row < slices.size() && slices[row].size() > idx) {
+            if(idx > -1 && row < slices.size() && static_cast<int>(slices[row].size()) > idx) {
                 value = slices[row][idx];
             }
         }
     }
-    printf("getValue slices %ld accessed row %ld col %d\n", slices.size(), row, idx);
     return value;
 }
