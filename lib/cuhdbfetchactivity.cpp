@@ -8,6 +8,7 @@
 #include <iostream>
 #include <assert.h>
 #include <hdbxsettings.h>
+#include <result.h>
 #include <timeinterval.h>
 #include <cumbiahdbworld.h>
 
@@ -97,18 +98,9 @@ bool CuHdbFetchActivity::matches(const CuData &token) const
  */
 void CuHdbFetchActivity::init()
 {
-    auto t1 = std::chrono::steady_clock::now();
     d->my_thread_id = pthread_self();
     assert(d->other_thread_id != d->my_thread_id);
-    // simulate a configuration (property type)
-    CuData res = getToken();
     d->thread_token = threadToken()["thtok"].toString();
-    res["type"] = "hdb";
-    res["mode"] = "hdb";
-    m_putInfo(res);
-    auto t2 = std::chrono::steady_clock::now();
-    res["elapsed_us"] = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-    publishResult(res);
 }
 
 /*! \brief the implementation of the CuActivity::execute hook
@@ -126,21 +118,35 @@ void CuHdbFetchActivity::execute()
     assert(d->my_thread_id == pthread_self());
     d->exec_cnt++;
     CuData res = getToken();
-    printf("CuHdbFetchActivity.execute: data %s\n", res.toString().c_str());
+    CumbiaHdbWorld world;
+    std::string src = res["src"].toString();
     m_putInfo(res);
     if(d->hdbx_s == nullptr) {
         res["err"] = true;
         res["msg"] = "CuHdbFetchActivity: database configuration is unset";
     }
-    else {
+    else if(src.size() > 0) {
         d->hdb_extractor = new Hdbextractor(this);
         d->hdb_extractor->setHdbXSettings(d->hdbx_s);
         d->hdb_extractor->setUpdateProgressPercent(10);
         bool ok = d->hdb_extractor->connect();
         if(res.containsKey("start_date") && res.containsKey("stop_date")) {
             TimeInterval tint(res["start_date"].toString().c_str(), res["stop_date"].toString().c_str());
-            if(ok)
-                d->hdb_extractor->getData(res["src"].toString().c_str(), &tint);
+            if(ok) {
+                if(res["fetch_property"].toBool() && world.isHdbpp(d->hdbx_s->dbName())) {
+                    CuData cfgd(res);
+                    cfgd["type"] = "property";
+                    Result *att_conf_result;
+                    double elapsed;
+                    ok = d->hdb_extractor->query(world.hdbppConfQuery(src).c_str(), att_conf_result, &elapsed);
+                    if(ok) {
+                        world.extract_data(att_conf_result, elapsed, cfgd);
+                        publishResult(cfgd);
+                    } // else error published below
+                }
+                if(ok)
+                    d->hdb_extractor->getData(src.c_str(), &tint);
+            }
             else {
                 res["err"] = true;
                 res["msg"] = std::string("CuHdbFetchActivity.execute: failed to connect to database host: "
@@ -149,11 +155,11 @@ void CuHdbFetchActivity::execute()
                                          std::string(d->hdb_extractor->getErrorMessage()));
                 perr("CuHdbFetchActivity.execute: %s", res.toString().c_str());
             }
-            res["err"] = (d->hdb_extractor->hasError());
+            res["err"] = d->hdb_extractor->hasError();
             if(res["err"].toBool())
                 res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
             if(ok) {
-                ok = d->hdb_extractor->findErrors(res["src"].toString().c_str(), &tint);
+                ok = d->hdb_extractor->findErrors(src.c_str(), &tint);
             }
             if(!ok) {
                 res["err"] = true;
@@ -190,7 +196,13 @@ void CuHdbFetchActivity::execute()
             publishResult(res);   // publish result
         }
     }
-
+    else {
+        res["err"] = true;
+        res["msg"] = std::string("CuHdbFetchActivity.execute: source is not valid"
+            " accepted form: \"[hdb://]domain/family/device/att-name(YYYY-MM-dd hh:mm:ss, YYYY-MM-dd hh:mm:ss)\"");
+        perr("%s", res["msg"].toString().c_str());
+        publishResult(res);
+    }
 }
 
 /*! \brief the implementation of the CuActivity::onExit hook
@@ -210,11 +222,6 @@ void CuHdbFetchActivity::onExit()
 {
     assert(d->my_thread_id == pthread_self());
     d->exiting = true;
-    CuData at = getToken(); /* activity token */
-    at["exit"] = true;
-    // do not publishResult because CuPoller (which is our listener) may be deleted by CuPollingService
-    // from the main thread when its action list is empty (see CuPollingService::unregisterAction)
-    publishResult(at);
     if(d->hdb_extractor)
         delete d->hdb_extractor;
 }
@@ -254,12 +261,9 @@ void CuHdbFetchActivity::onSourceProgressUpdate(const char *name, double percent
     CumbiaHdbWorld wo;
     wo.extract_data(data, res);
     publishResult(res);
-    printf("CuHdbFetchActivity::onSourceProgressUpdate %s %f\n", name, percent);
 }
 
-void CuHdbFetchActivity::onExtractionFinished(int totalRows, double elapsed)
-{
-    printf("CuHdbFetchActivity.onExtractionFinished: totalRows %d elapsed %f\n", totalRows, elapsed);
+void CuHdbFetchActivity::onExtractionFinished(int totalRows, double elapsed) {
 }
 
 void CuHdbFetchActivity::onSourceExtractionFinished(const char *name, int totalRows, double elapsed)
@@ -274,5 +278,4 @@ void CuHdbFetchActivity::onSourceExtractionFinished(const char *name, int totalR
     CumbiaHdbWorld wo;
     wo.extract_data(data, res);
     publishResult(res);
-    printf("CuHdbFetchActivity::onSourceExtractionFinished %s rows: %d elapsed: %f\n", name, totalRows, elapsed);
 }

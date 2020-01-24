@@ -14,6 +14,7 @@
 #include <QCheckBox>
 #include <QSettings>
 #include <QRadioButton>
+#include <QtDataVisualization/Q3DSurface>
 
 
 #ifdef QUMBIA_TANGO_CONTROLS_VERSION
@@ -191,7 +192,8 @@ void QuHdbExplorer::setT2Now()
 void QuHdbExplorer::get() {
     QDateTime t1 = findChild<QDateTimeEdit *>("dte1")->dateTime();
     QDateTime t2 = findChild<QDateTimeEdit *>("dte2")->dateTime();
-    QStringList srcs = findChild<QLineEdit *>("lesrc")->text().split(QRegExp("\\s+"));
+    QString t = findChild<QLineEdit *>("lesrc")->text();
+    QStringList srcs = t.trimmed().split(QRegExp("\\s+"));
     QStringList live;
 
     for(int i = 0; i < srcs.size(); i++) {
@@ -207,7 +209,11 @@ void QuHdbExplorer::get() {
             tp->setSources(srcs + live);
         }
         else if(m_surface && srcs.size() > 0) {
-            m_surface->setProperty("source", srcs.first());
+            QMetaObject::invokeMethod(m_surface, "clear");
+            foreach(QString s, srcs) {
+                QuTimeArrayReader_I *tarr_r = m_ta3d_plugin->createReader(this, m_cupool, m_fpool);
+                tarr_r->setLink(s, m_surface);
+            }
         }
     }
 }
@@ -239,11 +245,13 @@ void QuHdbExplorer::reloadTree()
             glo->removeWidget(plot);
             delete plot;
         }
-        if(m_ta3d_plugin) {
-            m_surface = m_ta3d_plugin->create("QuTimeArray3DPlot", nullptr, m_cupool, m_fpool);
+        if(m_ta3d_plugin)  {
+            m_surface = m_ta3d_plugin->create("QuTimeArray3DPlot", nullptr);
             QWidget *container = QWidget::createWindowContainer(m_surface, this);
             container->setObjectName("3dplot_container");
             glo->addWidget(container, layout_row, layout_col, lo_rowspan, lo_colspan);
+            QPushButton *pbClearPlot = findChild<QPushButton *>("pbClearPlot");
+            connect(pbClearPlot, SIGNAL(clicked()), m_surface, SLOT(clear()));
         }
     }
     else if(scalar && qobject_cast<QuTrendPlot *>(plot) == nullptr) {

@@ -49,24 +49,18 @@ void CumbiaHdb::m_init()
 
 void CumbiaHdb::addAction(const std::string &source, CuDataListener *l, const CuHdbActionFactoryI &f)
 {
-    CumbiaHdbWorld w;
-    if(w.source_valid(source))
-    {
-        CuHdbActionFactoryService *af =
-                static_cast<CuHdbActionFactoryService *>(getServiceProvider()->get(static_cast<CuServices::Type> (CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
+    CuHdbActionFactoryService *af =
+            static_cast<CuHdbActionFactoryService *>(getServiceProvider()->get(static_cast<CuServices::Type> (CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
 
-        CuHdbActionI *a = af->findActive(source, f.getType());
-        if(!a) {
-            a = af->registerAction(source, f, this);
-            if(!d->hdbx_settings)
-                setDbProfile(PROFILE_DEFAULT_NAME);
-            a->setHdbXSettings(d->hdbx_settings);
-            a->start();
-        }
-        a->addDataListener(l);
+    CuHdbActionI *a = af->findActive(source, f.getType());
+    if(!a) {
+        a = af->registerAction(source, f, this);
+        if(!d->hdbx_settings)
+            setDbProfile(PROFILE_DEFAULT_NAME);
+        a->setHdbXSettings(d->hdbx_settings);
+        a->start();
     }
-    else
-        perr("CumbiaHdb.addAction: source \"%s\" is not valid, ignoring", source.c_str());
+    a->addDataListener(l);
 }
 
 void CumbiaHdb::unlinkListener(const string &source, CuHdbActionI::Type t, CuDataListener *l)

@@ -17,7 +17,7 @@ public:
 
     std::vector<std::string> srcPatterns() const;
 
-    bool source_valid(const std::string& s);
+    bool source_valid(const std::string& s) const;
 
     void extract_data(const std::vector<XVariant> &dbdata, CuData& res) const;
 
@@ -33,6 +33,10 @@ public:
                          const std::vector<std::vector<std::string> > & slices,
                          size_t row,
                          const char *column_name) const;
+
+    std::string hdbppConfQuery(const std::string &att_name) const;
+
+    bool isHdbpp(const std::string &dbnam) const;
 
 private:
     std::vector<std::string> m_src_patterns;

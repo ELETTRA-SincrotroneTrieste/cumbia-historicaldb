@@ -35,6 +35,8 @@ public:
 
     Type getType() const;
 
+    static const char *hdb_source_regexp();
+
 private:
     string m_s, m_domain, m_find_pattern, m_query;
     std::string m_error;

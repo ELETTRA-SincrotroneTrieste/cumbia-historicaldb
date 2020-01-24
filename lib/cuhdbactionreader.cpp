@@ -218,6 +218,7 @@ void CuHdbActionReader::m_startFetchHdbActivity()
     if(d->hdb_src.getType() == HdbSource::DataFetch) {
         at["start_date"] = d->hdb_src.start_date();
         at["stop_date"] = d->hdb_src.stop_date();
+        at["fetch_property"] = d->options.containsKey("fetch_property") && d->options["fetch_property"].toBool();
     }
     else if(d->hdb_src.getType() == HdbSource::FindSources) {
         at["find_pattern"] = d->hdb_src.find_pattern();

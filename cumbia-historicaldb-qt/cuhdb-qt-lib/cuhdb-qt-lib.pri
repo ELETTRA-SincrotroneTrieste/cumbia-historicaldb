@@ -9,6 +9,7 @@ SHAREDIR = $${INSTALL_ROOT}/share
 DOCDIR = $${SHAREDIR}/doc/cuhdb-qt-lib
 LIBDIR = $${INSTALL_ROOT}/lib
 
+CONFIG += link_pkgconfig
 packagesExist(cumbia-hdb) {
     PKGCONFIG += cumbia-hdb
 }

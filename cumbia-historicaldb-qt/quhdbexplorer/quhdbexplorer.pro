@@ -12,7 +12,7 @@ exists($${INSTALL_ROOT}/include/qumbia-tango-controls/qumbia-tango-controls.pri)
     include($${INSTALL_ROOT}/include/qumbia-tango-controls/qumbia-tango-controls.pri)
 }
 
-exists(/usr/local/cumbia-libs/include/cumbia-qtcontrols/qutimearray3dplotplugin_i.h){
+exists($${INSTALL_ROOT}/include/cumbia-qtcontrols/qutimearray3dplotplugin_i.h){
     message("quhdbexplorer: detected qutimearray3dplotplugin ")
     DEFINES += HAS_QUTIMEARRAY3D
 } else {

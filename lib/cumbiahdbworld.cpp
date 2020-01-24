@@ -7,13 +7,17 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <string.h> // strlen
+#include <regex> // source valid
+#include "hdb_source.h"
 #include "cuhdb_config.h"
+#include "hdb_source.h" // for source regex
 
 CumbiaHdbWorld::CumbiaHdbWorld()
 {
     m_src_patterns.push_back("hdb://.+");
     m_src_patterns.push_back("hdb++://.+");
     m_src_patterns.push_back("hdbpp://.+");
+    m_src_patterns.push_back(HdbSource::hdb_source_regexp());
 }
 
 void CumbiaHdbWorld::setSrcPatterns(const std::vector<std::string> &pat_regex)
@@ -26,9 +30,10 @@ std::vector<std::string> CumbiaHdbWorld::srcPatterns() const
     return m_src_patterns;
 }
 
-bool CumbiaHdbWorld::source_valid(const std::string &s)
+bool CumbiaHdbWorld::source_valid(const std::string &s) const
 {
-    return true;
+    HdbSource hs(s);
+    return hs.isValid();
 }
 
 void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &res) const
@@ -54,7 +59,6 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
         ts = static_cast<time_t>(tv.tv_sec);
         ts += tv.tv_usec * 10e-6;
         // values
-        printf("value %ld type %d format %d is null %d timestamp %f\n", i, v.getType() , v.getFormat(), v.isNull(), ts);
         if(v.hasErrorDesc()) {
             nulls_timestamps_ms.push_back(ts * 1000.0);
             errors.push_back(std::string(v.getError()));
@@ -71,56 +75,59 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
             datatyp = v.getType();
             writable = v.getWritable();
             if(datafmt == XVariant::Scalar) {
+                res["data_format_str"] = "scalar";
+                res["write_mode_str"] = "ro";
                 if(datatyp == XVariant::Double) {
                     dvalues.push_back(v.toDouble());
                     res["value"] = dvalues;
+                    res["data_type_str"] = "double";
                 }
                 else if(datatyp == XVariant::Int) {
                     livalues.push_back(v.toLongInt());
                     res["value"] = livalues;
+                    res["data_type_str"] = "int";
                 }
                 else if(datatyp == XVariant::UInt) {
                     ulivalues.push_back(v.toULongInt());
                     res["value"] = ulivalues;
+                    res["data_type_str"] = "uint";
                 }
                 else if(datatyp == XVariant::Boolean) {
                     bvalues.push_back(v.toBool());
                     res["value"] = bvalues;
+                    res["data_type_str"] = "bool";
                 }
                 else if(datatyp == XVariant::String) {
                     svalues.push_back(v.toString());
                     res["value"] = svalues;
+                    res["data_type_str"] = "string";
                 }
                 else {
                     res["err"] = true;
                     res["msg"] = "CumbiaHdbWorld::extract_data: unsupported data type from db";
                 }
                 if(writable == XVariant::RW) {
+                    res["write_mode_str"] = "rw";
                     // extract "write" value
-                    dvalues.clear();
-                    svalues.clear();
-                    bvalues.clear();
-                    ulivalues.clear();
-                    livalues.clear();
                     if(datatyp == XVariant::Double) {
-                        dvalues.push_back(v.toDouble(false));
-                        res["w_value"] = dvalues;
+                        dwvalues.push_back(v.toDouble(false));
+                        res["w_value"] = dwvalues;
                     }
                     else if(datatyp == XVariant::Int) {
-                        livalues.push_back(v.toLongInt(false));
-                        res["w_value"] = livalues;
+                        liwvalues.push_back(v.toLongInt(false));
+                        res["w_value"] = liwvalues;
                     }
                     else if(datatyp == XVariant::UInt) {
-                        ulivalues.push_back(v.toULongInt(false));
-                        res["w_value"] = ulivalues;
+                        uliwvalues.push_back(v.toULongInt(false));
+                        res["w_value"] = uliwvalues;
                     }
                     else if(datatyp == XVariant::Boolean) {
-                        bvalues.push_back(v.toBool(false));
-                        res["w_value"] = bvalues;
+                        bwvalues.push_back(v.toBool(false));
+                        res["w_value"] = bwvalues;
                     }
                     else if(datatyp == XVariant::String) {
-                        svalues.push_back(v.toString(false));
-                        res["w_value"] = svalues;
+                        swvalues.push_back(v.toString(false));
+                        res["w_value"] = swvalues;
                     }
                     else {
                         res["err"] = true;
@@ -132,34 +139,39 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
                 datafmt = XVariant::Vector;
                 datatyp = v.getType();
                 writable = v.getWritable();
+                res["data_format_str"] = "vector";
+                res["write_mode_str"] = "ro";
                 if(datatyp == XVariant::Double) {
                     const std::vector<double> dv = v.toDoubleVector();
                     dvalues.insert(dvalues.end(), dv.begin(), dv.end());
-                    printf("\e[1;33mCuHdbWorld.extract_data: vector type %d (2 = double) timestamps siz %ld"
-                           " new data siz %ld total accumulated %ld\e[0m\n",
-                           datatyp, timestamps_ms.size(), dv.size(), dvalues.size());
+                    res["data_type_str"] = "double";
                 }
                 else if(datatyp == XVariant::Int) {
                     const std::vector<long int> iv = v.toLongIntVector();
                     livalues.insert(livalues.end(), iv.begin(), iv.end());
+                    res["data_type_str"] = "int";
                 }
                 else if(datatyp == XVariant::UInt) {
                     const std::vector<unsigned long int> uiv = v.toULongIntVector();
                     ulivalues.insert(ulivalues.end(), uiv.begin(), uiv.end());
+                    res["data_type_str"] = "uint";
                 }
                 else if(datatyp == XVariant::Boolean) {
                     const std::vector<bool> biv = v.toBoolVector();
                     bvalues.insert(bvalues.end(), biv.begin(), biv.end());
+                    res["data_type_str"] = "bool";
                 }
                 else if(datatyp == XVariant::String) {
                     const std::vector<std::string> svals = v.toStringVector();
                     svalues.insert(svalues.end(), svals.begin(), svals.end());
+                    res["data_type_str"] = "string";
                 }
                 else {
                     res["err"] = true;
                     res["msg"] = "CumbiaHdbWorld::extract_data: unsupported data type from db";
                 }
                 if(writable == XVariant::RW) {
+                    res["write_mode_str"] = "rw";
                     // extract "write" value
                     if(v.getType() == XVariant::Double) {
                         const std::vector<double> dv = v.toDoubleVector(false);
@@ -371,4 +383,15 @@ std::string CumbiaHdbWorld::getValue(const CuData &result,
         }
     }
     return value;
+}
+
+bool CumbiaHdbWorld::isHdbpp(const std::string& dbnam) const {
+    return dbnam == std::string("hdbpp");
+}
+
+std::string CumbiaHdbWorld::hdbppConfQuery(const std::string& att_name) const {
+    return std::string("SELECT label,unit,standard_unit,display_unit,format,description,archive_rel_change,"
+                       "archive_abs_change,archive_period FROM att_parameter,att_conf WHERE "
+                       "att_parameter.att_conf_id=att_conf.att_conf_id AND "
+                       "att_conf.att_name='" + att_name + "' ORDER BY recv_time DESC LIMIT 1");
 }
