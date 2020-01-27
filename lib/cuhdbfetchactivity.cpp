@@ -25,6 +25,8 @@ public:
     size_t size;
     Hdbextractor *hdb_extractor;
     HdbXSettings *hdbx_s;
+
+    CuData result;
 };
 
 /*! \brief the class constructor that sets up a Tango polling activity
@@ -158,7 +160,7 @@ void CuHdbFetchActivity::execute()
             res["err"] = d->hdb_extractor->hasError();
             if(res["err"].toBool())
                 res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
-            if(ok) {
+            if(ok && !res["no_fetch_errors"].toBool()) {
                 ok = d->hdb_extractor->findErrors(src.c_str(), &tint);
             }
             if(!ok) {
@@ -220,10 +222,13 @@ void CuHdbFetchActivity::execute()
  */
 void CuHdbFetchActivity::onExit()
 {
+    CuData res = getToken();
+    res["exit"] = true;
     assert(d->my_thread_id == pthread_self());
     d->exiting = true;
     if(d->hdb_extractor)
         delete d->hdb_extractor;
+    publishResult(res);
 }
 
 void CuHdbFetchActivity::m_putInfo(CuData &res)
@@ -253,7 +258,6 @@ int CuHdbFetchActivity::getType() const
 
 void CuHdbFetchActivity::onSourceProgressUpdate(const char *name, double percent) {
     CuData res = getToken();
-    res["src"] = std::string(name);
     res["progress"] = percent;
     res["err"] = false;
     std::vector<XVariant> data;
@@ -261,6 +265,7 @@ void CuHdbFetchActivity::onSourceProgressUpdate(const char *name, double percent
     CumbiaHdbWorld wo;
     wo.extract_data(data, res);
     publishResult(res);
+
 }
 
 void CuHdbFetchActivity::onExtractionFinished(int totalRows, double elapsed) {
@@ -268,8 +273,7 @@ void CuHdbFetchActivity::onExtractionFinished(int totalRows, double elapsed) {
 
 void CuHdbFetchActivity::onSourceExtractionFinished(const char *name, int totalRows, double elapsed)
 {
-    CuData res;
-    res["src"] = std::string(name);
+    CuData res = getToken();
     res["progress"] = 100;
     res["elapsed"] = elapsed;
     res["err"] = false;

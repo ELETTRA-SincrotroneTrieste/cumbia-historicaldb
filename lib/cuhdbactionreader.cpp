@@ -79,7 +79,6 @@ void CuHdbActionReader::setOptions(const CuData &options) {
  */
 void CuHdbActionReader::onResult(const CuData &data)
 {
-    //    bool err = data["err"].toBool();
     bool a_exit = data["exit"].toBool(); // activity exit flag
     // iterator can be invalidated if listener's onUpdate unsets source: use a copy
     std::set<CuDataListener *> lis_copy = d->listeners;
@@ -172,8 +171,7 @@ void CuHdbActionReader::getData(CuData &d_inout) const
  */
 void CuHdbActionReader::stop()
 {
-    if(!d->exit)
-    {
+    if(!d->exit) {
         d->exit = true;
         m_stopHdbGenActivity();
     }
@@ -219,6 +217,7 @@ void CuHdbActionReader::m_startFetchHdbActivity()
         at["start_date"] = d->hdb_src.start_date();
         at["stop_date"] = d->hdb_src.stop_date();
         at["fetch_property"] = d->options.containsKey("fetch_property") && d->options["fetch_property"].toBool();
+        at["no_fetch_errors"] = d->options.containsKey("no_fetch_errors") && d->options["no_fetch_errors"].toBool();
     }
     else if(d->hdb_src.getType() == HdbSource::FindSources) {
         at["find_pattern"] = d->hdb_src.find_pattern();

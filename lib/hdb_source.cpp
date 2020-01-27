@@ -28,11 +28,13 @@ HdbSource::HdbSource(const std::string& s)
         size_t pos = s.find("find/");
         if(pos != string::npos) {
             m_find_pattern = s.substr(pos + strlen("find/"));
+            m_s = s;
         }
         else {
             pos = s.find("query/");
             if(pos != string::npos) {
                 m_query = s.substr(pos + strlen("query/"));
+                m_s = s;
             }
             else {
                 m_valid = false;

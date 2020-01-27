@@ -40,7 +40,7 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
 {
     // xvariant.h: enum DataType { TypeInvalid = -1, Int, UInt, Double, Boolean, String };
     // lib/cpp/server/idl/tango.h:  enum AttrQuality { ATTR_VALID, ATTR_INVALID, ATTR_ALARM, ATTR_CHANGING, ATTR_WARNING /*, __max_AttrQuality=0xffffffff */ };
-    std::vector<double> timestamps, timestamps_ms, nulls_timestamps_ms;
+    std::vector<double>  timestamps_us, nulls_timestamps_us;
     struct timeval tv;
     double ts;
     std::vector<double > dvalues, dwvalues;
@@ -56,21 +56,20 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
         const XVariant& v = dbdata[i];
         // timestamps
         tv = v.getTimevalTimestamp();
+
         ts = static_cast<time_t>(tv.tv_sec);
-        ts += tv.tv_usec * 10e-6;
+        ts += tv.tv_usec * 1e-6;
         // values
         if(v.hasErrorDesc()) {
-            nulls_timestamps_ms.push_back(ts * 1000.0);
+            nulls_timestamps_us.push_back(ts);
             errors.push_back(std::string(v.getError()));
-            res["notes_time_scale_ms"] = nulls_timestamps_ms;
+            res["notes_time_scale_us"] = nulls_timestamps_us;
             res["notes"] = errors;
         }
         else {
             // no error
-            timestamps.push_back(ts);
-            timestamps_ms.push_back(ts * 1000.0);
-            res["time_scale"] = timestamps;
-            res["time_scale_ms"] = timestamps_ms;
+            timestamps_us.push_back(ts);
+            res["time_scale_us"] = timestamps_us;
             datafmt = v.getFormat();
             datatyp = v.getType();
             writable = v.getWritable();
@@ -199,7 +198,7 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
                 res["err"] = true;
                 res["msg"] = "CumbiaHdbWorld::extract_data: only scalar and vector data is supported for the moment";
             }
-        }
+        } // !v.hasErrorDesc
     }
 
     if(datafmt == XVariant::Vector) {
