@@ -26,11 +26,16 @@ var NAVTREE =
   [ "cumbia-hdb", "index.html", [
     [ "Cumbia hdb module", "index.html", [
       [ "Introduction", "index.html#introduction", [
-        [ "databases", "index.html#Supported", null ],
-        [ "queries", "index.html#Data", null ],
-        [ "queries", "index.html#Custom", null ],
-        [ "of attributes stored into the database", "index.html#List", null ],
-        [ "contents from the cumbia-hdb module", "index.html#CuData", null ]
+        [ "Prerequisites", "index.html#dependencies", [
+          [ "Qt integration", "index.html#qt_integration", null ],
+          [ "Optional components", "index.html#optional_plugins", null ]
+        ] ],
+        [ "Supported databases", "index.html#supported_dbs", null ],
+        [ "Data queries", "index.html#data_queries", null ],
+        [ "Custom queries", "index.html#custom_queries", null ],
+        [ "List of attributes stored into the database", "index.html#list_atts", null ],
+        [ "Database <em>profiles</em>", "index.html#profiles", null ],
+        [ "CuData contents from the cumbia-hdb module", "index.html#cudata", null ]
       ] ]
     ] ],
     [ "Classes", "annotated.html", [
