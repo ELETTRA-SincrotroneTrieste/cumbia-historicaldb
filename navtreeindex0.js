@@ -215,11 +215,11 @@ var NAVTREEINDEX0 =
 "index.html#cudata":[0,0,6],
 "index.html#custom_queries":[0,0,3],
 "index.html#data_queries":[0,0,2],
+"index.html#db_profiles":[0,0,5],
 "index.html#dependencies":[0,0,0],
 "index.html#introduction":[0,0],
 "index.html#list_atts":[0,0,4],
 "index.html#optional_plugins":[0,0,0,1],
-"index.html#profiles":[0,0,5],
 "index.html#qt_integration":[0,0,0,0],
 "index.html#supported_dbs":[0,0,1],
 "pages.html":[]
