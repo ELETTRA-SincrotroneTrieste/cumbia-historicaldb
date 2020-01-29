@@ -18,32 +18,32 @@ configure_file(output : 'config.h',
 
 
 headers = [
-        'lib/cuhdbactionfactories.h',
-        'lib/cuhdbactionfactoryi.h',
-    'lib/cuhdbactionfactoryservice.h',
-    'lib/cuhdbactioni.h',
-    'lib/cuhdbactionreader.h',
-    'lib/cuhdbfetchactivity.h',
-    'lib/cumbiahdb.h',
-    'lib/cumbiahdbworld.h',
-    'lib/hdb_source.h'
+        'src/cuhdbactionfactories.h',
+        'src/cuhdbactionfactoryi.h',
+    'src/cuhdbactionfactoryservice.h',
+    'src/cuhdbactioni.h',
+    'src/cuhdbactionreader.h',
+    'src/cuhdbfetchactivity.h',
+    'src/cumbiahdb.h',
+    'src/cumbiahdbworld.h',
+    'src/hdb_source.h'
 ]
 
 install_headers(headers, subdir : 'cumbia-hdb') # -> include/cumbia/
 
 sources = [
-'lib/cuhdbactionfactories.cpp',
-'lib/cuhdbactionfactoryservice.cpp',
-'lib/cuhdbactioni.cpp',
-'lib/cuhdbactionreader.cpp',
-'lib/cuhdbfetchactivity.cpp',
-'lib/cumbiahdb.cpp',
-'lib/cumbiahdbworld.cpp',
-'lib/hdb_source.cpp'
+'src/cuhdbactionfactories.cpp',
+'src/cuhdbactionfactoryservice.cpp',
+'src/cuhdbactioni.cpp',
+'src/cuhdbactionreader.cpp',
+'src/cuhdbfetchactivity.cpp',
+'src/cumbiahdb.cpp',
+'src/cumbiahdbworld.cpp',
+'src/hdb_source.cpp'
 
 ]
 
-includedirs = include_directories('lib')
+includedirs = include_directories('src')
 
 cpp_arguments = [  '-DCUMBIA_DEBUG_OUTPUT=1' ]
 
