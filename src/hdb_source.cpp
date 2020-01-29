@@ -3,25 +3,54 @@
 #include <algorithm>
 #include <regex>
 
-static const char* hdb_src_regex = "(hdb://){0,1}([A-Za-z0-9_\\-\\./\\:]+)\\(\\s*(\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\s*)\\s*,\\s*(\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\s*)\\s*\\)";
+// srv-tango-srf.fcs.elettra.trieste.it:20000/sl/feedback/fb_opa_energy_fel01.01/pidvalues( 2019-06-03 16:00:59)
+// srv-tango-srf.fcs.elettra.trieste.it:20000/sl/feedback/fb_opa_energy_fel01.01/pidvalues( 2019-06-03 16:00:59, 2019-06-03 23:30:00)
+// (hdb://){0,1}([A-Za-z0-9_\-\./\:]+)\(\s*(\d{4}[\-]\d{2}[\-]\d{2}\s+\d{2}:\d{2}:\d{2}\s*)\s*(?:,\s*(\d{4}[\-]\d{2}[\-]\d{2}\s+\d{2}:\d{2}:\d{2}\s*)\s*){0,1}\)
+static const char* hdb_src_regex = "(hdb://){0,1}([A-Za-z0-9_\\-\\./\\:]+)\\(\\s*(\\d{4}[\\-]\\d{2}[\\-]\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\s*)\\s*(?:,\\s*(\\d{4}[\\-]\\d{2}[\\-]\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\s*)\\s*){0,1}\\)";
 
 HdbSource::HdbSource() {
     m_valid = false;
 }
 
+/*!
+ * \brief HdbSource constructor.
+ *
+ * \par Accepted syntax
+ *
+ * - [hdb://]domain/family/device/attribute(start_date, stop_date)
+ *   *start_date*: YYYY-MM-dd hh:mm:ss e.g. 2019-06-21 10:00:00
+ *   *stop_date*: YYYY-MM-dd hh:mm:ss e.g. 2019-06-21 10:00:00
+ *   Get data within start_date and stop_date
+ *
+ * - [hdb://]domain/family/device/attribute(date)
+ *   *date*  YYYY-MM-dd hh:mm:ss e.g. 2019-06-21 10:00:00
+ *   Get the value at the given date in the past
+ *
+ * - hdb://find/pattern
+ *   find sources matching pattern
+ *
+ * - hdb://query/sql_query
+ *   perform the specified query to the database
+ *
+ * \param s a string conforming to the accepted forms
+ */
 HdbSource::HdbSource(const std::string& s)
 {
-    // (hdb://){0,1}([A-Za-z0-9_\-\./\:]+)\(\s*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s*)\s*,\s*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}\s*)\s*\)
     std::string expr(hdb_src_regex);
     std::regex re(expr);
     std::smatch hdb_src_match;
+
     if(std::regex_match(s, hdb_src_match, re)) {
-        if (hdb_src_match.size() == 5) {
+        printf("HdbSource: funckin match  siz %d\n",
+               hdb_src_match.size());
+        if (hdb_src_match.size() > 4) {
             std::sub_match src = hdb_src_match[2];
             m_s = src.str();
             m_domain = hdb_src_match[1].str();
             m_start_dt = hdb_src_match[3].str();
             m_stop_dt = hdb_src_match[4].str();
+            if(m_stop_dt.size() == 0)
+                m_stop_dt = m_start_dt;
         }
     }
     else {
@@ -51,6 +80,10 @@ HdbSource::HdbSource(const HdbSource &other)
     m_from(other);
 }
 
+/*!
+ * \brief get the complete source, including the domain, "hdb://", if specified
+ * \return the complete source passed to the HdbSource constructor
+ */
 string HdbSource::getName() const
 {
     return m_s;

@@ -133,6 +133,9 @@ void CuHdbFetchActivity::execute()
         d->hdb_extractor->setUpdateProgressPercent(10);
         bool ok = d->hdb_extractor->connect();
         if(res.containsKey("start_date") && res.containsKey("stop_date")) {
+            if(res["stop_date"].toString() == res["start_date"].toString()) {
+                d->hdb_extractor->getHdbXSettings()->set("FillFromThePastMode", "KeepWindow");
+            }
             TimeInterval tint(res["start_date"].toString().c_str(), res["stop_date"].toString().c_str());
             if(ok) {
                 if(res["fetch_property"].toBool() && world.isHdbpp(d->hdbx_s->dbName())) {
@@ -146,8 +149,9 @@ void CuHdbFetchActivity::execute()
                         publishResult(cfgd);
                     } // else error published below
                 }
-                if(ok)
+                if(ok) {
                     d->hdb_extractor->getData(src.c_str(), &tint);
+                }
             }
             else {
                 res["err"] = true;

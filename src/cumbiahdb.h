@@ -13,11 +13,24 @@ class CumbiaHdbPrivate;
 class HdbXSettings;
 
 /*!
- * \mainpage
+ * \mainpage Cumbia hdb module
  *
  * \section introduction Introduction
  *
  * The CumbiaHdb module
+ *
+ * \subsection Supported databases
+ *
+ * \subsection Data queries
+ *
+ * \subsection Custom queries
+ *
+ * \subsection List of attributes stored into the database
+ *
+ *
+ * \subsection CuData contents from the cumbia-hdb module
+ *
+
  */
 class CumbiaHdb : public Cumbia
 {

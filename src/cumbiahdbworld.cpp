@@ -66,13 +66,18 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
             res["notes_time_scale_us"] = nulls_timestamps_us;
             res["notes"] = errors;
         }
-        else {
+        else if(!v.isNull()) {
             // no error
             timestamps_us.push_back(ts);
             res["time_scale_us"] = timestamps_us;
             datafmt = v.getFormat();
             datatyp = v.getType();
             writable = v.getWritable();
+            if(dbdata.size() == 1) {
+                // one single value: make result compatible with a single read
+                res["timestamp_ms"] = static_cast<long int>(ts * 1000.0);
+                res["timestamp_us"] = ts;
+            }
             if(datafmt == XVariant::Scalar) {
                 res["data_format_str"] = "scalar";
                 res["write_mode_str"] = "ro";
@@ -198,7 +203,23 @@ void CumbiaHdbWorld::extract_data(const std::vector<XVariant> &dbdata, CuData &r
                 res["err"] = true;
                 res["msg"] = "CumbiaHdbWorld::extract_data: only scalar and vector data is supported for the moment";
             }
-        } // !v.hasErrorDesc
+        } // else if(!v.isNull())
+    } // for(size_t i = 0; i < dbdata.size(); i++)
+
+    res["has_null"] = static_cast<bool>(nulls_timestamps_us.size() > 0);
+    res["null_cnt"] = static_cast<int>(nulls_timestamps_us.size());
+    res["valid_cnt"] = static_cast<int>(timestamps_us.size());
+
+    if(nulls_timestamps_us.size() > 0) {
+        // valid data mixed with nulls
+        res["quality"] = 4; // warning
+        res["quality_color"] = std::string("yellow");
+        res["quality_string"] = "warning";
+    }
+    else {
+        res["quality"] = 0;
+        res["quality_color"] = "white";
+        res["quality_string"] = "valid";
     }
 
     if(datafmt == XVariant::Vector) {
