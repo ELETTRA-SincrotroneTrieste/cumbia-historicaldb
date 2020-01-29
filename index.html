@@ -151,15 +151,16 @@ contents from the cumbia-hdb module</h2>
 <td class="markdownTableBodyNone">column_count  </td><td class="markdownTableBodyNone">size_t aka long int  </td><td class="markdownTableBodyNone">number of columns in a <em>custom query</em> result  </td><td class="markdownTableBodyNone">number of columns in the result  </td><td class="markdownTableBodyNone">present in <em>custom queries</em> only. Use toLongInt   </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">results  </td><td class="markdownTableBodyNone">std::vector&lt;std::string&gt;  </td><td class="markdownTableBodyNone">the results of the query, row after row  </td><td class="markdownTableBodyNone">in <em>custom queries</em>, stores the results in a sequence of rows one after another. Use column_count to separate each row  </td><td class="markdownTableBodyNone">each row of results is inserted at the back. Use toStringVector. Use in conjunction with <em>row_count</em>   </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">row_count  </td><td class="markdownTableBodyNone">size_T aka long int  </td><td class="markdownTableBodyNone">size of the vector of results  </td><td class="markdownTableBodyNone">number of results  </td><td class="markdownTableBodyNone">use toLongInt   </td></tr>
 </table>
-<p>|row_count | size_T aka long int | number of results | use toLongInt | </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed Jan 29 2020 15:05:18 for cumbia-hdb by
+    <li class="footer">Generated on Wed Jan 29 2020 15:11:10 for cumbia-hdb by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.15 </li>
   </ul>
