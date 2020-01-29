@@ -15,6 +15,12 @@ cp -a doc/html/* ../../cumbia-historicaldb-gh-pages/
 
 - cd ../../cumbia-historicaldb-gh-pages
 
+### add new files that may have been generated from modifications to sources
+
+- git add * 
+
+### publish to github gh-pages branch
+
 - git commit -a -m "regenerated doc"
 - git push
 
