@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>dbtemplate.dat</file>
-    </qresource>
-</RCC>
