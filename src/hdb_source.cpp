@@ -41,8 +41,6 @@ HdbSource::HdbSource(const std::string& s)
     std::smatch hdb_src_match;
 
     if(std::regex_match(s, hdb_src_match, re)) {
-        printf("HdbSource: funckin match  siz %d\n",
-               hdb_src_match.size());
         if (hdb_src_match.size() > 4) {
             std::sub_match src = hdb_src_match[2];
             m_s = src.str();

@@ -311,8 +311,6 @@ QuTrendPlot *QuHdbExplorer::m_createTrendPlot()
     plot = new QuTrendPlot(this, m_cupool, m_fpool);
     plot->setYAxisAutoscaleEnabled(true);
     plot->setShowDateOnTimeAxis(true);
-    plot->setUpperBoundExtra(QwtPlot::xBottom, 0.05);
-    plot->setUpperBoundExtra(QwtPlot::yLeft, 0.2);
     QPushButton *pbClearPlot = findChild<QPushButton *>("pbClearPlot");
     connect(pbClearPlot, SIGNAL(clicked()), plot, SLOT(clearPlot()));
     return plot;

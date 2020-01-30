@@ -17,6 +17,9 @@ In the distribution you will find the following components:
 - A Qt application, named *hdb-db-profile-manager*, to create, remove and modify database *profiles* (see
   the dedicated section below)
 
+## Documentation
+   https://elettra-sincrotronetrieste.github.io/cumbia-historicaldb/
+
 ## Installation
 
 - git clone https://github.com/ELETTRA-SincrotroneTrieste/hdbextractor.git
