@@ -217,6 +217,7 @@ var NAVTREEINDEX0 =
 "index.html#data_queries":[0,0,2],
 "index.html#db_profiles":[0,0,5],
 "index.html#dependencies":[0,0,0],
+"index.html#example":[0,0,7],
 "index.html#introduction":[0,0],
 "index.html#list_atts":[0,0,4],
 "index.html#optional_plugins":[0,0,0,1],

@@ -35,7 +35,8 @@ var NAVTREE =
         [ "Custom queries", "index.html#custom_queries", null ],
         [ "List of attributes stored into the database", "index.html#list_atts", null ],
         [ "Database profiles", "index.html#db_profiles", null ],
-        [ "CuData contents from the cumbia-hdb module", "index.html#cudata", null ]
+        [ "CuData contents from the cumbia-hdb module", "index.html#cudata", null ],
+        [ "Example", "index.html#example", null ]
       ] ]
     ] ],
     [ "Classes", "annotated.html", [
