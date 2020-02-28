@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     parser.addOption(delProfile);
 
     QCommandLineOption setDefault(QStringList() << "d" << "set-default",
-                                  "delete a profile", "profile");
+                                  "set the default profile", "profile");
     parser.addOption(setDefault);
 
 

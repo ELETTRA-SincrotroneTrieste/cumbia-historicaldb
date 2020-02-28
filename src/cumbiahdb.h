@@ -79,6 +79,41 @@ class HdbXSettings;
  *
  * \subsection db_profiles Database profiles
  *
+ * To let applications work without a specific database configuration file,
+ * a *database profile* solution is adopted by cumbia-hdb apps.
+ * *cumbia-hdb* manages several database *profile* configurations, that can be configured
+ * by an utility installed alongside the *qt* modules: the *hdb-db-profile-manager*
+ * (source under: cumbia-historicaldb-qt/hdb-db-profile-manager).
+ *
+ * Each *cumbia-hdb* application can load a *profile* rather than a
+ * file, making it easier to administer system wide historical configurations.
+ * For example:
+ *
+ * \code
+    QString dbprofile;
+    if(argc > 1) dbprofile = QString(argv[1]); // profile specified as option
+    if(!db_profile.isEmpty()) {
+        hdb_p->setDbProfile(db_profile);
+    }
+    else {
+        // use default profile, see `hdb-db-profile-manager -l`
+    }
+ * \endcode
+ *
+ * \subsubsection hdb-db-profile-manager app
+ *
+ * Execute the *hdb-db-profile-manager* utility with the following parameters:
+ * - *-a, --add-profile <profile>* to add a new profile
+ * - *-e, --edit-profile <profile>* to edit an existing profile
+ * - *-r, --remove-profile <profile>* to remove an existing profile
+ * - *-d, --set-default* to set the default profile
+ * - *-l, --list-profiles* to list the available profiles
+ * - *<profile>* show the configuration of the given profile
+ *
+ * The *-a and -e* options offer a guided procedure to edit the configuration
+ * of the database for *hdbextractor* and *cumbia-hdb* applications.
+ *
+ *
  *
  * \subsection cudata CuData contents from the cumbia-hdb module
  *
