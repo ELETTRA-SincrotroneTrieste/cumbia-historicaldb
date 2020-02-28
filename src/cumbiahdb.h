@@ -154,7 +154,7 @@ class HdbXSettings;
  *
  * - select *Multi engine* in the *Support* box;
  * - type *hdb_display_scalar* in the *Project Name* input text field;
- * - Choose or type the directory where the project skeleton will be created, in the example case
+ * - Choose or type the directory where the project skeleton will be created
  * - Click on Create
  *
  * \note Given the simplicity of this example, we will not use the Qt designer to draw the
