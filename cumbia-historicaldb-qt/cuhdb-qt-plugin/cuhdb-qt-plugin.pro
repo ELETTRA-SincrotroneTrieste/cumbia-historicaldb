@@ -24,7 +24,8 @@ unix {
     INSTALLS += target
 }
 
-LIBS += -lcumbia-hdb -lcuhdb-qt
+INCLUDEPATH += ../cuhdb-qt-lib/src
+LIBS += -lcumbia-hdb -lcuhdb-qt -L../cuhdb-qt-lib
 
 message("cuhdb-qt-plugin: plugin installation dir:  $${DEFINES_CUMBIA_QTCONTROLS_PLUGIN_DIR}")
 

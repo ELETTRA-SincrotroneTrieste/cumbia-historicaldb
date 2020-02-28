@@ -23,7 +23,7 @@
 #include <cutreader.h>
 #include <cutcontrolsreader.h>
 #include <cucontext.h>
-#include <quhdbbrowser.h>
+#include "quhdbbrowser.h" // unix:INCLUDEPATH in .pro
 #ifdef HAS_QUTIMEARRAY3D
 
 // the following is provided by the qutimearray3dplotplugin plugin
@@ -208,6 +208,7 @@ void QuHdbExplorer::get() {
             tp->getContext()->setOptions(CuData("refresh_mode", CuTReader::PolledRefresh));
             tp->setSources(srcs + live);
         }
+#ifdef HAS_QUTIMEARRAY3D
         else if(m_surface && srcs.size() > 0) {
             QMetaObject::invokeMethod(m_surface, "clear");
             foreach(QString s, srcs) {
@@ -215,6 +216,7 @@ void QuHdbExplorer::get() {
                 tarr_r->setLink(s, m_surface);
             }
         }
+#endif
     }
 }
 
@@ -245,6 +247,7 @@ void QuHdbExplorer::reloadTree()
             glo->removeWidget(plot);
             delete plot;
         }
+#ifdef HAS_QUTIMEARRAY3D
         if(m_ta3d_plugin)  {
             m_surface = m_ta3d_plugin->create("QuTimeArray3DPlot", nullptr);
             QWidget *container = QWidget::createWindowContainer(m_surface, this);
@@ -253,6 +256,7 @@ void QuHdbExplorer::reloadTree()
             QPushButton *pbClearPlot = findChild<QPushButton *>("pbClearPlot");
             connect(pbClearPlot, SIGNAL(clicked()), m_surface, SLOT(clear()));
         }
+#endif
     }
     else if(scalar && qobject_cast<QuTrendPlot *>(plot) == nullptr) {
         if(plot) { // plot but not QuTrendPlot
@@ -276,6 +280,7 @@ void QuHdbExplorer::reloadTree()
 }
 
 void QuHdbExplorer::show3DPlotConf(bool show) {
+#ifdef HAS_QUTIMEARRAY3D
     if(m_ta3d_plugin) {
         QWidget *confw;
         show ? confw = m_ta3d_plugin->plotConfigurationWidget(m_surface) : confw = nullptr;
@@ -301,6 +306,7 @@ void QuHdbExplorer::show3DPlotConf(bool show) {
             }
         }
     }
+#endif
 }
 
 QuTrendPlot *QuHdbExplorer::m_createTrendPlot()

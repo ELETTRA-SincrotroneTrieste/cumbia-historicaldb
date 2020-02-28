@@ -4,7 +4,7 @@
 #include <QtDebug>
 #include <cuthreadfactoryimpl.h>
 #include <qthreadseventbridgefactory.h>
-#include <cuhdbreader.h>
+#include "cuhdbreader.h"
 
 class CuHdbQtPluginPrivate
 {

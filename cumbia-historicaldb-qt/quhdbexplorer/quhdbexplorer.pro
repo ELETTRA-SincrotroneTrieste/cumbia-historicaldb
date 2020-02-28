@@ -20,7 +20,8 @@ exists($${INSTALL_ROOT}/include/cumbia-qtcontrols/qutimearray3dplotplugin_i.h){
 }
 
 include($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri)
-include($${INSTALL_ROOT}/include/cuhdb-qt-lib/cuhdb-qt-lib.pri)
+
+include(../cuhdb-qt-lib/cuhdb-qt-lib.pri)
 
 QT       += core gui
 
@@ -40,6 +41,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+INCLUDEPATH += ../cuhdb-qt-lib/src/
+LIBS += -L../cuhdb-qt-lib -lcuhdb-qt
 
 SOURCES += \
     main.cpp \

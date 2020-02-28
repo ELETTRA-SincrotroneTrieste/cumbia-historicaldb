@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QDateTime>
 #include <cumbiahdbworld.h>
-#include "../../lib/cuhdb_config.h"
+#include "../../src/cuhdb_config.h"
 
 Option::Option()
 {
