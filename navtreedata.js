@@ -34,7 +34,9 @@ var NAVTREE =
         [ "Data queries", "index.html#data_queries", null ],
         [ "Custom queries", "index.html#custom_queries", null ],
         [ "List of attributes stored into the database", "index.html#list_atts", null ],
-        [ "Database profiles", "index.html#db_profiles", null ],
+        [ "Database profiles", "index.html#db_profiles", [
+          [ "app", "index.html#hdb-db-profile-manager", null ]
+        ] ],
         [ "CuData contents from the cumbia-hdb module", "index.html#cudata", null ],
         [ "Example", "index.html#example", null ]
       ] ]

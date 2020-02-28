@@ -1,5 +1,5 @@
 <map id="CuHdbFetchActivity" name="CuHdbFetchActivity">
-<area shape="rect" id="node1" title="an activity to periodically read from Tango. Implements CuContinuousActivity" alt="" coords="80,80,219,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,133,32"/>
-<area shape="rect" id="node3" title=" " alt="" coords="157,5,301,32"/>
+<area shape="rect" id="node1" title="an activity to periodically read from Tango. Implements CuContinuousActivity" alt="" coords="80,80,220,107"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,135,32"/>
+<area shape="rect" id="node3" title=" " alt="" coords="159,5,304,32"/>
 </map>

@@ -132,6 +132,19 @@ Custom queries</h2>
 List of attributes stored into the database</h2>
 <h2><a class="anchor" id="db_profiles"></a>
 Database profiles</h2>
+<p>To let applications work without a specific database configuration file, a <em>database profile</em> solution is adopted by cumbia-hdb apps. <em>cumbia-hdb</em> manages several database <em>profile</em> configurations, that can be configured by an utility installed alongside the <em>qt</em> modules: the <em>hdb-db-profile-manager</em> (source under: cumbia-historicaldb-qt/hdb-db-profile-manager).</p>
+<p>Each <em>cumbia-hdb</em> application can load a <em>profile</em> rather than a file, making it easier to administer system wide historical configurations. For example:</p>
+<div class="fragment"><div class="line">QString dbprofile;</div><div class="line"><span class="keywordflow">if</span>(argc &gt; 1) dbprofile = QString(argv[1]); <span class="comment">// profile specified as option</span></div><div class="line"><span class="keywordflow">if</span>(!db_profile.isEmpty()) {</div><div class="line">    hdb_p-&gt;setDbProfile(db_profile);</div><div class="line">}</div><div class="line"><span class="keywordflow">else</span> {</div><div class="line">    <span class="comment">// use default profile, see `hdb-db-profile-manager -l`</span></div><div class="line">}</div></div><!-- fragment --><h3><a class="anchor" id="hdb-db-profile-manager"></a>
+app</h3>
+<p>Execute the <em>hdb-db-profile-manager</em> utility with the following parameters:</p><ul>
+<li><em>-a, &ndash;add-profile &lt;profile&gt;</em> to add a new profile</li>
+<li><em>-e, &ndash;edit-profile &lt;profile&gt;</em> to edit an existing profile</li>
+<li><em>-r, &ndash;remove-profile &lt;profile&gt;</em> to remove an existing profile</li>
+<li><em>-d, &ndash;set-default</em> to set the default profile</li>
+<li><em>-l, &ndash;list-profiles</em> to list the available profiles</li>
+<li>*&lt;profile&gt;* show the configuration of the given profile</li>
+</ul>
+<p>The <em>-a and -e</em> options offer a guided procedure to edit the configuration of the database for <em>hdbextractor</em> and <em>cumbia-hdb</em> applications.</p>
 <h2><a class="anchor" id="cudata"></a>
 CuData contents from the cumbia-hdb module</h2>
 <table class="markdownTable">
@@ -204,7 +217,7 @@ Example</h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Jan 30 2020 14:39:35 for cumbia-hdb by
+    <li class="footer">Generated on Fri Feb 28 2020 13:28:42 for cumbia-hdb by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.15 </li>
   </ul>
