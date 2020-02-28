@@ -2,7 +2,13 @@ isEmpty(INSTALL_ROOT) {
     INSTALL_ROOT = /usr/local/cumbia-libs
 }
 
-include($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri)
+
+exists($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri) {
+	message("cuhdb-qt-lib: using cumbia-qtcontrols installation under $${INSTALL_ROOT}")
+	include($${INSTALL_ROOT}/include/cumbia-qtcontrols/cumbia-qtcontrols.pri)
+} else {
+	error("cuhdb-qt-lib: did not find cumbia-qtcontrols installation under $${INSTALL_ROOT}")
+}
 
 INCLUDEDIR = $${INSTALL_ROOT}/include/cuhdb-qt-lib
 SHAREDIR = $${INSTALL_ROOT}/share

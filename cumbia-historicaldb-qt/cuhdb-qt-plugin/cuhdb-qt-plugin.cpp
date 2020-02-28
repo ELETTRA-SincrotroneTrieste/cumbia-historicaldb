@@ -17,6 +17,7 @@ CuHdbQtPlugin::CuHdbQtPlugin(QObject *parent) : QObject(parent)
 {
     d = new CuHdbQtPluginPrivate;
     d->cuhdb = new CumbiaHdb(new CuThreadFactoryImpl(), new QThreadsEventBridgeFactory());
+    d->r_fac = nullptr;
 }
 
 CuHdbQtPlugin::~CuHdbQtPlugin()
