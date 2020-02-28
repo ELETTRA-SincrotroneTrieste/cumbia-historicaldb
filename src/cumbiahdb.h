@@ -119,7 +119,7 @@ class HdbXSettings;
  *
  * |Key          | Type       | Value             | Description   | Notes      |
  * |-------------|------------|-------------------|---------------|------------|
- * | src         | string     | the name of the source | The complete name of the source, without *hdb://* domain prefix and start/stop date | eg: *tango://tango-host:PORT/test/device/tg_test/double_scalar*        |
+ * | src         | string     | the name of the source | The complete name of the source, without <em>hdb://</em> domain prefix and start/stop date | eg: *tango://tango-host:PORT/test/device/tg_test/double_scalar*        |
  * | time_scale_us | vector<double> | vector of double: seconds.microseconds |  `data_time` columns from the hdb++ database, MySQL type DATATIME | convert with toDouble. Note for Qt: use QDateTime::fromMSecsSinceEpoch(v[i] * 1000).toString("yyyy-MM-dd hh:mm:ss.zzz")) |
  * |notes_time_scale_us | std::vector<double> | vector of double: seconds.microseconds | `data_time` columns from the hdb++ database, MySQL type DATATIME, WHERE value is NULL | Conversion notes as time_scale_us |
  * |notes             | std::vector<std::string>  | vector of strings | error messages from the database. i-th notes_time_scale_us --> i-th note | convert with toStringVector |
