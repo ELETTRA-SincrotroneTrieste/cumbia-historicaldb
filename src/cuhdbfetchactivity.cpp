@@ -164,7 +164,7 @@ void CuHdbFetchActivity::execute()
             res["err"] = d->hdb_extractor->hasError();
             if(res["err"].toBool())
                 res["msg"] = std::string(d->hdb_extractor->getErrorMessage());
-            if(ok && !res["no_fetch_errors"].toBool()) {
+            if(ok && !res["no_fetch_errors"].toBool() && world.isHdbpp(d->hdbx_s->dbName())) {
                 ok = d->hdb_extractor->findErrors(src.c_str(), &tint);
             }
             if(!ok) {
