@@ -9,6 +9,14 @@ TARGET = cuhdb-qt
 INCLUDEPATH += .
 DISTFILES += cuhdb-qt-lib.pri
 
+DEFINES += CUMBIA_PRINTINFO
+
+VERSION_HEX = 0x010203
+VERSION = 1.2.3
+
+DEFINES += CUHDB_QT_VERSION_STR=\"\\\"$${VERSION}\\\"\" \
+    CUHDB_QT_VERSION=$${VERSION_HEX}
+
 # You can make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # Please consult the documentation of the deprecated API in order to know
