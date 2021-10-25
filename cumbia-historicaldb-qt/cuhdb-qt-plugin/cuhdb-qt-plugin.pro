@@ -9,6 +9,8 @@ TARGET = cuhdb-qt-plugin
 TEMPLATE = lib
 CONFIG += plugin debug
 
+PLUGIN_DIR = $${INSTALL_ROOT}/lib/qumbia-plugins
+
 SOURCES += \
     cuhdb-qt-plugin.cpp
 
@@ -20,7 +22,7 @@ DISTFILES += cuhdb-qt-plugin.json
 inc.files += $${HEADERS}
 
 unix {
-    target.path = $${DEFINES_CUMBIA_QTCONTROLS_PLUGIN_DIR}
+    target.path = $${PLUGIN_DIR}
     INSTALLS += target
 }
 
