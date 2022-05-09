@@ -228,8 +228,7 @@ void CuHdbActionReader::m_startFetchHdbActivity()
     at["activity"] = "hdb";
     if(d->options.containsKey("label"))
         at["label"] = d->options["label"].toString();
-    CuData tt; // thread token
-    tt["token"] = "hdbextractor";
+    const std::string tt = "hdbextractor";
     d->hdb_fetch_a = new CuHdbFetchActivity(at, d->hdbx_settings);
     const CuThreadsEventBridgeFactory_I &bf = *(d->cumbia_hdb->getThreadEventsBridgeFactory());
     const CuThreadFactoryImplI &fi = *(d->cumbia_hdb->getThreadFactoryImpl());

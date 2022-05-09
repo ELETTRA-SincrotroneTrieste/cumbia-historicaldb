@@ -45,7 +45,7 @@ public:
  *     the poller is not started and the activity is suspended (repeat will return -1).
  */
 CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
-    : CuIsolatedActivity(token)
+    : CuActivity(token)
 {
     d = new CuHdbActivityPrivate;
     d->repeat = -1;
@@ -57,7 +57,6 @@ CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
     d->hdb_extractor = nullptr;
     d->hdbx_s = hdbxs;
     //  flag CuActivity::CuADeleteOnExit is true
-    setFlag(CuActivity::CuAUnregisterAfterExec, true);
 }
 
 /*! \brief the class destructor
@@ -102,7 +101,6 @@ void CuHdbFetchActivity::init()
 {
     d->my_thread_id = pthread_self();
     assert(d->other_thread_id != d->my_thread_id);
-    d->thread_token = threadToken()["thtok"].toString();
 }
 
 /*! \brief the implementation of the CuActivity::execute hook
@@ -239,7 +237,7 @@ void CuHdbFetchActivity::m_putInfo(CuData &res)
 {
     res["mode"] = "hdb";
     res["period"] = d->repeat;
-    res["thread"] = d->thread_token;
+    res["thread"] = threadToken();
     const CuData& atok = getToken();
     if(atok.containsKey("label"))
         res["label"] = atok["label"];
@@ -286,4 +284,9 @@ void CuHdbFetchActivity::onSourceExtractionFinished(const char *name, int totalR
     CumbiaHdbWorld wo;
     wo.extract_data(data, res);
     publishResult(res);
+}
+
+
+int CuHdbFetchActivity::repeat() const {
+    return 0;
 }
