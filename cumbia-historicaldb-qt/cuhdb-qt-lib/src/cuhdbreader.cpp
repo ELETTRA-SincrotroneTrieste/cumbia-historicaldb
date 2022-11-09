@@ -69,7 +69,6 @@ CuHdbReader::CuHdbReader(Cumbia *cumbia_hdb, CuDataListener *tl)
 CuHdbReader::~CuHdbReader()
 {
     pdelete("CuHdbReader %p", this);
-    d->tlistener->invalidate();
     unsetSource();
     delete d;
 }

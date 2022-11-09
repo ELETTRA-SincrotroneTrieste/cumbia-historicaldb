@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <assert.h>
-#include <hdbxsettings.h>
+#include <dbsettings.h>
 #include <result.h>
 #include <timeinterval.h>
 #include <cumbiahdbworld.h>
@@ -24,7 +24,7 @@ public:
     double min, max;
     size_t size;
     Hdbextractor *hdb_extractor;
-    HdbXSettings *hdbx_s;
+    DbSettings *hdbx_s;
 
     CuData result;
 };
@@ -44,7 +44,7 @@ public:
  * \li CuAUnregisterAfterExec is disabled because if the Tango device is not defined into the database
  *     the poller is not started and the activity is suspended (repeat will return -1).
  */
-CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
+CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, DbSettings *hdbxs)
     : CuActivity(token)
 {
     d = new CuHdbActivityPrivate;
@@ -207,6 +207,7 @@ void CuHdbFetchActivity::execute()
         perr("%s", res["msg"].toString().c_str());
         publishResult(res);
     }
+    publishResult(CuData("exit", true).set("activity", "hdb").set("src", src));
 }
 
 /*! \brief the implementation of the CuActivity::onExit hook
@@ -230,7 +231,7 @@ void CuHdbFetchActivity::onExit()
     d->exiting = true;
     if(d->hdb_extractor)
         delete d->hdb_extractor;
-    publishResult(res);
+//    publishResult(res);
 }
 
 void CuHdbFetchActivity::m_putInfo(CuData &res)

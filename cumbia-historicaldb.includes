@@ -1,5 +1,7 @@
 /usr/local/cumbia-libs/include/cumbia
 /usr/local/cumbia-libs/include/cumbia-qtcontrols
 cumbia-historicaldb-qt/cuhdb-qt-lib/src
+/usr/local/hdbextractor/include/hdbextractor
 /usr/local/hdbextractor/include/
+/usr/local/elettra.eu.libsqldb/include/libsqldb/
 src

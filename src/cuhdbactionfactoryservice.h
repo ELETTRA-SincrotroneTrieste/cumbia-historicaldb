@@ -52,9 +52,7 @@ public:
 
     CuHdbActionI* registerAction(const std::string& src, const CuHdbActionFactoryI& f, CumbiaHdb *ct);
 
-    CuHdbActionI *findActive(const std::string &name, CuHdbActionI::Type at);
-
-    std::vector<CuHdbActionI *> find(const std::string &name, CuHdbActionI::Type at);
+    CuHdbActionI* find(const std::string &name, CuHdbActionI::Type at);
 
     size_t count() const;
 

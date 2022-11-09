@@ -16,8 +16,9 @@ public:
     HdbSource(const std::string &s);
     HdbSource(const HdbSource& other);
 
-    string getName() const;
-    string getDomain() const;
+    std::string src() const;
+    std::string getName() const;
+    std::string getDomain() const;
 
     HdbSource & operator=(const HdbSource& other);
 
@@ -38,7 +39,7 @@ public:
     static const char *hdb_source_regexp();
 
 private:
-    string m_s, m_domain, m_find_pattern, m_query;
+    string m_s, m_domain, m_find_pattern, m_query, m_full;
     std::string m_error;
     std::string m_start_dt, m_stop_dt;
     bool m_valid;

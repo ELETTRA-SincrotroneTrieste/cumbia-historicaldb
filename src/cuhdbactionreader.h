@@ -11,7 +11,7 @@ class CuActivityManager;
 class CuDataListener;
 class CumbiaHdb;
 class CuData;
-class HdbXSettings;
+class DbSettings;
 
 
 /** \brief Low level class to read tango attributes and commands with output arguments.
@@ -88,7 +88,7 @@ public:
 
     bool exiting() const;
 
-    void setHdbXSettings(HdbXSettings *hdbs);
+    void setHdbXSettings(DbSettings *hdbs);
 
 private:
     CuHdbActionReaderPrivate *d;

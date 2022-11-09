@@ -47,7 +47,7 @@ includedirs = include_directories('src')
 
 cpp_arguments = [  '-DCUMBIA_DEBUG_OUTPUT=1' ]
 
-deps = [ dependency('threads'), dependency('cumbia'), dependency('hdbextractor++') ]
+deps = [ dependency('threads'), dependency('cumbia'), dependency('libsqldb'), dependency('hdbextractor++') ]
 
 cumbialib = shared_library('cumbia-hdb', sources,
         version : meson.project_version(),
@@ -71,7 +71,7 @@ pkgg.generate(
     version : meson.project_version(),
     name : 'libcumbia-hdb',
     filebase : 'cumbia-hdb',
-    requires: ['hdbextractor++', 'cumbia'],
+    requires: ['hdbextractor++', 'cumbia', 'libsqldb' ],
     description : project_description )
 
 

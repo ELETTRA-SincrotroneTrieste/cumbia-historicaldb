@@ -8,7 +8,7 @@
 #include <cuhdbactionfactoryi.h>
 #include <cuthreadfactoryimpl.h>
 #include <cuthreadseventbridgefactory_i.h>
-#include <hdbxsettings.h>
+#include <dbsettings.h>
 #include <sys/types.h>
 #include <errno.h>
 #include <string.h> // strerror
@@ -16,7 +16,7 @@
 class CumbiaHdbPrivate {
 public:
     CuData db_conn_params;
-    HdbXSettings* hdbx_settings;
+    DbSettings* hdbx_settings;
 };
 
 CumbiaHdb::CumbiaHdb(CuThreadFactoryImplI *tfi, CuThreadsEventBridgeFactory_I *teb)
@@ -52,7 +52,7 @@ void CumbiaHdb::addAction(const std::string &source, CuDataListener *l, const Cu
     CuHdbActionFactoryService *af =
             static_cast<CuHdbActionFactoryService *>(getServiceProvider()->get(static_cast<CuServices::Type> (CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
 
-    CuHdbActionI *a = af->findActive(source, f.getType());
+    CuHdbActionI *a = af->find(source, f.getType());
     if(!a) {
         a = af->registerAction(source, f, this);
         if(!d->hdbx_settings)
@@ -63,13 +63,13 @@ void CumbiaHdb::addAction(const std::string &source, CuDataListener *l, const Cu
     a->addDataListener(l);
 }
 
-void CumbiaHdb::unlinkListener(const string &source, CuHdbActionI::Type t, CuDataListener *l)
+void CumbiaHdb::unlinkListener(const std::string &source, CuHdbActionI::Type t, CuDataListener *l)
 {
     CuHdbActionFactoryService *af =
             static_cast<CuHdbActionFactoryService *>(getServiceProvider()->get(static_cast<CuServices::Type> (CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
-    std::vector<CuHdbActionI *> actions = af->find(source, t);
-    for(size_t i = 0; i < actions.size(); i++) {
-        actions[i]->removeDataListener(l); /* when no more listeners, a stops itself */
+    CuHdbActionI * action = af->find(source, t);
+    if(action) {
+        action->removeDataListener(l);
     }
 }
 
@@ -77,8 +77,7 @@ CuHdbActionI *CumbiaHdb::findAction(const std::string &source, CuHdbActionI::Typ
 {
     CuHdbActionFactoryService *af =
             static_cast<CuHdbActionFactoryService *>(getServiceProvider()->get(static_cast<CuServices::Type> (CuHdbActionFactoryService::CuHdbActionFactoryServiceType)));
-    CuHdbActionI* a = af->findActive(source, t);
-    return a;
+    return af->find(source, t);
 }
 
 CuThreadFactoryImplI *CumbiaHdb::getThreadFactoryImpl() const
@@ -94,7 +93,7 @@ CuThreadsEventBridgeFactory_I *CumbiaHdb::getThreadEventsBridgeFactory() const
 void CumbiaHdb::setDbProfile(const string &db_profile_name) {
     CumbiaHdbWorld world;
     std::string fnam =  world.getDbProfilesDir() + "/" + db_profile_name + "." + std::string(PROFILES_EXTENSION);
-    HdbXSettings* hdbxs = new HdbXSettings();
+    DbSettings* hdbxs = new DbSettings();
     hdbxs->loadFromFile(fnam.c_str());
     if(hdbxs->hasError()) {
         perr("CumbiaHdb.setDbProfile: failed to open profile \"%s\": %s", db_profile_name.c_str(),
@@ -113,13 +112,13 @@ void CumbiaHdb::setDbProfile(const string &db_profile_name) {
  * CumbiaHdb takes the ownership of hdb_settings, that is destroyed either after a new call to
  * setHdbXSettings or within CumbiaHdb class destructor.
  */
-void CumbiaHdb::setHdbXSettings(HdbXSettings *hdb_settings) {
+void CumbiaHdb::setHdbXSettings(DbSettings *hdb_settings) {
     if(d->hdbx_settings)
         delete d->hdbx_settings;
     d->hdbx_settings = hdb_settings;
 }
 
-HdbXSettings *CumbiaHdb::hdbXSettings() const {
+DbSettings *CumbiaHdb::hdbXSettings() const {
     return d->hdbx_settings;
 }
 

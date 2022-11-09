@@ -54,7 +54,7 @@ public:
      */
     enum Type { CuHdbFetchActivityType = CuActivity::UserAType + 7 };
 
-    CuHdbFetchActivity(const CuData& token, HdbXSettings *hdbxs);
+    CuHdbFetchActivity(const CuData& token, DbSettings *hdbxs);
 
     ~CuHdbFetchActivity();
 
