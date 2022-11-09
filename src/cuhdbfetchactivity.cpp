@@ -56,7 +56,7 @@ CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, DbSettings *hdbxs)
     d->label = "hdb";
     d->hdb_extractor = nullptr;
     d->hdbx_s = hdbxs;
-    //  flag CuActivity::CuADeleteOnExit is true
+    setFlag(CuActivity::CuADeleteOnExit, true);
 }
 
 /*! \brief the class destructor
@@ -65,6 +65,7 @@ CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, DbSettings *hdbxs)
  */
 CuHdbFetchActivity::~CuHdbFetchActivity()
 {
+    pdelete("~CuHdbFetchActivity %p", this);
     delete d;
 }
 
