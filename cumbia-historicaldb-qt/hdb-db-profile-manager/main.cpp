@@ -3,7 +3,6 @@
 #include <QTextStream>
 #include <cumacros.h>
 #include <QString>
-#include <QRegExp>
 #include <QtDebug>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
