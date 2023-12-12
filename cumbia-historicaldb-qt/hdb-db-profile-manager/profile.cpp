@@ -2,7 +2,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <cumacros.h>
 #include <QDir>
 #include <QDateTime>
@@ -48,27 +48,33 @@ bool Profile::load(const QString &name, bool is_template) {
         QTextStream in(&file);
         while(!in.atEnd() && m_errMsg.isEmpty()) {
             QString l = in.readLine();
-            if(l.contains(QRegExp("#\\s*"))) {
-                l.remove(QRegExp("#\\s*"));
+            if(l.contains(QRegularExpression("#\\s*"))) {
+                l.remove(QRegularExpression("#\\s*"));
                 if(!l.isEmpty())
                     desc += l + "\n";
             }
             else {
                 // we find a key = value line
                 // save desc and process
-                QRegExp re("([A-Za-z0-9]+)\\s*=\\s*(.*)");
-                if(re.indexIn(l) >= 0) {
-                    key = re.capturedTexts()[1].trimmed();
+                QRegularExpression re("([A-Za-z0-9]+)\\s*=\\s*(.*)");
+                QRegularExpressionMatch ma = re.match(l);
+                if(ma.hasMatch()) {
+                    key = ma.captured(1).trimmed();
                     Option opt;
                     opt.optionDesc = desc;
                     desc.clear(); // clear desc buffer
-                    if(re.capturedTexts().size() > 2) {
-                        opt.value = re.capturedTexts()[2].trimmed();
+                    if(ma.capturedTexts().size() > 2) {
+                        opt.value = ma.captured(2).trimmed();
                         if(opt.value.isEmpty()) {
                             m_errMsg = "Profile.load: value associated to \"" + key + "\" cannot be empty";
                         }
-                        if(!opt.value.contains(QRegExp("%[sdf]"))) {
-                            options = opt.value.split(QRegExp("\\s*,\\s*"), QString::SkipEmptyParts);
+                        if(!opt.value.contains(QRegularExpression("%[sdf]"))) {
+                            options = opt.value.split(QRegularExpression("\\s*,\\s*"),
+#if QT_VERSION >= QT_VERSION_CHECK(5,15,0)
+                                                      Qt::SkipEmptyParts);
+#else
+                                                      QString::SkipEmptyParts);
+#endif
                             for(int i = 0; i < options.size(); i++) {
                                 QString o = options[i];
                                 if(o.endsWith('*')) {
@@ -294,5 +300,5 @@ QString Profile::defaultLinkPath() const
 QString Profile::profilePath(const QString& profile_name) const
 {
     return QString("%1/%2.%3").arg(QString::fromStdString(CumbiaHdbWorld().getDbProfilesDir()))
-                .arg(profile_name).arg(PROFILES_EXTENSION);
+        .arg(profile_name).arg(PROFILES_EXTENSION);
 }

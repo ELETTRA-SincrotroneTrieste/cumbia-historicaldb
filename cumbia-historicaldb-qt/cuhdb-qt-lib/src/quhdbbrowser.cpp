@@ -14,7 +14,6 @@
 #include <QTreeWidgetItem>
 #include <QHeaderView>
 #include <QtDebug>
-#include <dbmacros.h>
 #include <cumbiahdbworld.h>
 #include <QDragMoveEvent>
 #include <QDragEnterEvent>
