@@ -28,19 +28,31 @@ DOCDIR = $${SHAREDIR}/doc/cuhdb-qt-lib
 LIBDIR = $${INSTALL_ROOT}/lib
 
 CONFIG += link_pkgconfig
-packagesExist(cumbia-hdb) {
-    PKGCONFIG += cumbia-hdb
+
+packagesExist(libsqldb) {
+    PKGCONFIG += libsqldb
+    message("cuhdb-qt-lib: found libsqldb")
 }
 else {
-    message("cuhdb-qt-lib: missing dependency cumbia-hdb")
+    error("cuhdb-qt-lib: missing dependency libsqldb")
 }
 
 packagesExist(hdbextractor++) {
     PKGCONFIG += hdbextractor++
+    message("cuhdb-qt-lib: found hdbextractor++")
 }
 else {
-    message("cuhdb-qt-lib: missing dependency hdbextractor++")
+    error("cuhdb-qt-lib: missing dependency hdbextractor++")
 }
+
+packagesExist(cumbia-hdb) {
+    PKGCONFIG += cumbia-hdb
+    message("cuhdb-qt-lib: found cumbia-hdb")
+}
+else {
+    error("cuhdb-qt-lib: missing dependency cumbia-hdb")
+}
+
 
 INCLUDEPATH += $${INCLUDEDIR}
 

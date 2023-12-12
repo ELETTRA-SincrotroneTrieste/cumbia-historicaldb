@@ -5,7 +5,7 @@
 #include <hdb_source.h>
 
 class CuDataListener;
-class HdbXSettings;
+class DbSettings;
 
 class CuHdbActionI : public CuThreadListener
 {
@@ -123,7 +123,7 @@ public:
      * \brief set HdbXSettings
      * \param hdbs pointer to a previously allocated HdbXSettings
      */
-    virtual void setHdbXSettings(HdbXSettings *hdbs) = 0;
+    virtual void setHdbXSettings(DbSettings *hdbs) = 0;
 
     // CuThreadListener interface
 public:

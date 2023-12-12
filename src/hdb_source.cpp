@@ -34,8 +34,8 @@ HdbSource::HdbSource() {
  *
  * \param s a string conforming to the accepted forms
  */
-HdbSource::HdbSource(const std::string& s)
-{
+HdbSource::HdbSource(const std::string& s) {
+    m_full = s;
     std::string expr(hdb_src_regex);
     std::regex re(expr);
     std::smatch hdb_src_match;
@@ -76,6 +76,10 @@ HdbSource::HdbSource(const std::string& s)
 HdbSource::HdbSource(const HdbSource &other)
 {
     m_from(other);
+}
+
+string HdbSource::src() const {
+    return m_full;
 }
 
 /*!
@@ -149,6 +153,7 @@ const char* HdbSource::hdb_source_regexp() {
 
 void HdbSource::m_from(const HdbSource &other)
 {
+    m_full = other.m_full;
     m_s = other.m_s;
     m_domain = other.m_domain;
     m_start_dt = other.m_start_dt;

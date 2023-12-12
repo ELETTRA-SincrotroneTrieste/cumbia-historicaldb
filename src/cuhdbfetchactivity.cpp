@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <assert.h>
-#include <hdbxsettings.h>
+#include <dbsettings.h>
 #include <result.h>
 #include <timeinterval.h>
 #include <cumbiahdbworld.h>
@@ -24,7 +24,7 @@ public:
     double min, max;
     size_t size;
     Hdbextractor *hdb_extractor;
-    HdbXSettings *hdbx_s;
+    DbSettings *hdbx_s;
 
     CuData result;
 };
@@ -44,8 +44,8 @@ public:
  * \li CuAUnregisterAfterExec is disabled because if the Tango device is not defined into the database
  *     the poller is not started and the activity is suspended (repeat will return -1).
  */
-CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
-    : CuIsolatedActivity(token)
+CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, DbSettings *hdbxs)
+    : CuActivity(token)
 {
     d = new CuHdbActivityPrivate;
     d->repeat = -1;
@@ -56,8 +56,7 @@ CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
     d->label = "hdb";
     d->hdb_extractor = nullptr;
     d->hdbx_s = hdbxs;
-    //  flag CuActivity::CuADeleteOnExit is true
-    setFlag(CuActivity::CuAUnregisterAfterExec, true);
+    setFlag(CuActivity::CuADeleteOnExit, true);
 }
 
 /*! \brief the class destructor
@@ -66,6 +65,7 @@ CuHdbFetchActivity::CuHdbFetchActivity(const CuData &token, HdbXSettings *hdbxs)
  */
 CuHdbFetchActivity::~CuHdbFetchActivity()
 {
+    pdelete("~CuHdbFetchActivity %p", this);
     delete d;
 }
 
@@ -102,7 +102,6 @@ void CuHdbFetchActivity::init()
 {
     d->my_thread_id = pthread_self();
     assert(d->other_thread_id != d->my_thread_id);
-    d->thread_token = threadToken()["thtok"].toString();
 }
 
 /*! \brief the implementation of the CuActivity::execute hook
@@ -209,6 +208,7 @@ void CuHdbFetchActivity::execute()
         perr("%s", res["msg"].toString().c_str());
         publishResult(res);
     }
+    publishResult(CuData("exit", true).set("activity", "hdb").set("src", src));
 }
 
 /*! \brief the implementation of the CuActivity::onExit hook
@@ -232,14 +232,14 @@ void CuHdbFetchActivity::onExit()
     d->exiting = true;
     if(d->hdb_extractor)
         delete d->hdb_extractor;
-    publishResult(res);
+//    publishResult(res);
 }
 
 void CuHdbFetchActivity::m_putInfo(CuData &res)
 {
     res["mode"] = "hdb";
     res["period"] = d->repeat;
-    res["thread"] = d->thread_token;
+    res["thread"] = threadToken();
     const CuData& atok = getToken();
     if(atok.containsKey("label"))
         res["label"] = atok["label"];
@@ -286,4 +286,9 @@ void CuHdbFetchActivity::onSourceExtractionFinished(const char *name, int totalR
     CumbiaHdbWorld wo;
     wo.extract_data(data, res);
     publishResult(res);
+}
+
+
+int CuHdbFetchActivity::repeat() const {
+    return 0;
 }

@@ -10,7 +10,7 @@ class CuThreadFactoryImplI;
 class CuThreadsEventBridgeFactory_I;
 class CuDataListener;
 class CumbiaHdbPrivate;
-class HdbXSettings;
+class DbSettings;
 
 /*!
  * \mainpage Cumbia hdb module
@@ -286,8 +286,8 @@ public:
     CuThreadsEventBridgeFactory_I* getThreadEventsBridgeFactory() const;
 
     void setDbProfile(const std::string& db_profile_name);
-    void setHdbXSettings(HdbXSettings *hdb_settings);
-    HdbXSettings *hdbXSettings() const;
+    void setHdbXSettings(DbSettings *hdb_settings);
+    DbSettings *hdbXSettings() const;
 
     CuData getDbParams() const;
 

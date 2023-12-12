@@ -13,7 +13,7 @@
 
 #include "cuhdbactionreader.h"
 #include <cumacros.h>
-#include <hdbxsettings.h>
+#include <dbsettings.h>
 
 class CuHdbActionReaderPrivate
 {
@@ -24,7 +24,7 @@ public:
     bool exit;
     CuHdbFetchActivity *hdb_fetch_a;
     CuData options, value_d;
-    HdbXSettings *hdbx_settings;
+    DbSettings *hdbx_settings;
 };
 
 CuHdbActionReader::CuHdbActionReader(const HdbSource& src, CumbiaHdb *ct) : CuHdbActionI()
@@ -200,7 +200,7 @@ bool CuHdbActionReader::exiting() const
     return d->exit;
 }
 
-void CuHdbActionReader::setHdbXSettings(HdbXSettings *hdbs) {
+void CuHdbActionReader::setHdbXSettings(DbSettings *hdbs) {
     d->hdbx_settings = hdbs;
 }
 
@@ -228,16 +228,14 @@ void CuHdbActionReader::m_startFetchHdbActivity()
     at["activity"] = "hdb";
     if(d->options.containsKey("label"))
         at["label"] = d->options["label"].toString();
-    CuData tt; // thread token
-    tt["token"] = "hdbextractor";
+    const std::string tt = "hdbextractor";
     d->hdb_fetch_a = new CuHdbFetchActivity(at, d->hdbx_settings);
     const CuThreadsEventBridgeFactory_I &bf = *(d->cumbia_hdb->getThreadEventsBridgeFactory());
     const CuThreadFactoryImplI &fi = *(d->cumbia_hdb->getThreadFactoryImpl());
     d->cumbia_hdb->registerActivity(d->hdb_fetch_a, this, tt, fi, bf);
 }
 
-void CuHdbActionReader::m_stopHdbGenActivity()
-{
+void CuHdbActionReader::m_stopHdbGenActivity() {
     d->cumbia_hdb->unregisterActivity(d->hdb_fetch_a);
     d->hdb_fetch_a = NULL; // not safe to dereference henceforth
 }

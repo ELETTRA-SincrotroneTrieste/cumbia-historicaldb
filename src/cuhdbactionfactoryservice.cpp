@@ -3,7 +3,6 @@
 #include "hdb_source.h"
 #include "cuhdbactioni.h"
 #include <map>
-#include <mutex>
 #include <cumacros.h>
 
 /*! @private
@@ -12,7 +11,6 @@ class CuHDBActionFactoryServicePrivate
 {
 public:
     std::list<CuHdbActionI * > actions;
-    std::mutex mutex;
 };
 
 /*! \brief the class constructor
@@ -45,10 +43,9 @@ CuHdbActionI *CuHdbActionFactoryService::registerAction(const std::string& src,
                                                        CumbiaHdb* ct)
 {
     CuHdbActionI* action = NULL;
-    std::lock_guard<std::mutex> lock(d->mutex);
     std::list<CuHdbActionI *>::const_iterator it;
-    for(it = d->actions.begin(); it != d->actions.end(); ++it)
-        if((*it)->getType() == f.getType() && (*it)->getSource().getName() == src && !(*it)->exiting()) {
+    for(it = d->actions.begin(); it != d->actions.end(); ++it) // use HdbSource.src to get the full source
+        if((*it)->getType() == f.getType() && (*it)->getSource().src() == src) {
             break;
         }
 
@@ -60,61 +57,14 @@ CuHdbActionI *CuHdbActionFactoryService::registerAction(const std::string& src,
     return action;
 }
 
-/*! \brief find an *active* action given the source name and the action type
- *
- * @param src the complete source (target) name (no wildcard)
- * @param at the action type (Reader, Writer, AttConfig, ...)
- * @return the active action with the given src and type.
- *
- * \note
- * An action is *active* as long as CuHdbActionI::exiting returns false.
- * Usually, an action is marked as *exiting* when CuHdbActionI::stop is called.
- * For example, see CuTReader::stop and CuTWriter::stop
- * An action can be stopped when a data listener is removed, as in CuTReader::removeDataListener
- * and CuTWriter::removeDataListener.
- * CuTReader::removeDataListener and CuTWriter::removeDataListener are invoked by
- * CumbiaTango::unlinkListener. qumbia-tango-controls CuTControlsReader
- * (CuTControlsWriter) and qumbia-epics-controls CuEpControlsReader (CuEpControlsWriter) call
- * CumbiaTango::unlinkListener from within unsetSource (unsetTarget for writers).
- *
- * This sequence is an example if you ever need to deal with stopping and unregistering an
- * action from a client.
- *
- */
-CuHdbActionI *CuHdbActionFactoryService::findActive(const string &src, CuHdbActionI::Type at)
+CuHdbActionI * CuHdbActionFactoryService::find(const string &src, CuHdbActionI::Type at)
 {
-    std::lock_guard<std::mutex> lock(d->mutex);
-    std::list<CuHdbActionI *>::const_iterator it;
-    for(it = d->actions.begin(); it != d->actions.end(); ++it)
-        if((*it)->getType() == at && (*it)->getSource().getName() == src && !(*it)->exiting())
-            return (*it);
-    return NULL;
-}
-
-/*! \brief find an action given its source and type
- *
- * @param src the complete source (target) name (no wildcard)
- * @param at the action type (Reader, Writer, AttConfig, ...)
- * @return a list of actions with the given src and type.
- *
- * \par Note
- * Multiple actions can be found with the given src and type. This is likely to happen when
- * a new action is registered, stopped and registered again with the same src in a short time.
- * In this case, we end up with a not active action and an active one with the same src.
- *
- * \par Note
- * To find active actions (whose stop method hasn't been called yet), use findActive
- */
-std::vector<CuHdbActionI *> CuHdbActionFactoryService::find(const string &src, CuHdbActionI::Type at)
-{
-    std::lock_guard<std::mutex> lock(d->mutex);
-    std::vector <CuHdbActionI *> actions;
     std::list<CuHdbActionI *>::const_iterator it;
     for(it = d->actions.begin(); it != d->actions.end(); ++it) {
-        if((*it)->getType() == at && (*it)->getSource().getName() == src)
-            actions.push_back(*it);
+        if((*it)->getType() == at && (*it)->getSource().src() == src)
+            return (*it);
     }
-    return actions;
+    return nullptr;
 }
 
 /*! \brief return the number of registered actions
@@ -147,13 +97,12 @@ size_t CuHdbActionFactoryService::count() const
  */
 void CuHdbActionFactoryService::unregisterAction(const std::string &src, CuHdbActionI::Type at)
 {
-    std::lock_guard<std::mutex> lock(d->mutex);
     std::list<CuHdbActionI *>::iterator it;
     size_t siz = d->actions.size();
 
     it = d->actions.begin();
     while( it != d->actions.end())  {
-        if((*it)->getType() == at && (*it)->getSource().getName() == src && (*it)->exiting()) {
+        if((*it)->getType() == at && (*it)->getSource().src() == src && (*it)->exiting()) {
             it = d->actions.erase(it);
         }
         else
@@ -173,7 +122,6 @@ void CuHdbActionFactoryService::unregisterAction(const std::string &src, CuHdbAc
  */
 void CuHdbActionFactoryService::cleanup()
 {
-    std::lock_guard<std::mutex> lock(d->mutex);
     std::list<CuHdbActionI *>::iterator it = d->actions.begin();
     while(it != d->actions.end())
     {

@@ -1,7 +1,7 @@
 #ifndef CUHDBGENACTIVITY_H
 #define CUHDBGENACTIVITY_H
 
-#include <cuisolatedactivity.h>
+#include <cuactivity.h>
 #include <cuactivityevent.h>
 #include <list>
 #include <cuhdbactioni.h>
@@ -46,15 +46,15 @@ class CuHdbActivityPrivate;
  * @see CuTReader::stop
  *
  */
-class CuHdbFetchActivity : public CuIsolatedActivity, public HdbExtractorListener
+class CuHdbFetchActivity : public CuActivity, public HdbExtractorListener
 {
 public:
 
     /*! \brief defines the Type of the activity, returned by getType
      */
-    enum Type { CuHdbFetchActivityType = CuActivity::User + 7 };
+    enum Type { CuHdbFetchActivityType = CuActivity::UserAType + 7 };
 
-    CuHdbFetchActivity(const CuData& token, HdbXSettings *hdbxs);
+    CuHdbFetchActivity(const CuData& token, DbSettings *hdbxs);
 
     ~CuHdbFetchActivity();
 
@@ -82,6 +82,10 @@ public:
     void onSourceProgressUpdate(const char *name, double percent);
     void onExtractionFinished(int totalRows, double elapsed);
     void onSourceExtractionFinished(const char *name, int totalRows, double elapsed);
+
+    // CuActivity interface
+public:
+    int repeat() const;
 };
 
 #endif // CUPOLLINGACTIVITY_H
