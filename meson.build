@@ -1,4 +1,4 @@
-project('cumbia-hdb', 'cpp', version : '1.0.2',
+project('cumbia-hdb', 'cpp', version : '1.1.0',
     default_options : ['c_std=c17', 'cpp_std=c++17'])
 
 project_description = 'use cumbia to extract data from hdb and hdb++ historical databases'
