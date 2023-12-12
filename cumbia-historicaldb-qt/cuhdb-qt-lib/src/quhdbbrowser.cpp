@@ -229,7 +229,11 @@ void  QuHdbBrowser::addSource(const QString &src, bool expand)
     name.remove("tango://");
     QTreeWidgetItem* parent = NULL, *found = NULL;
     QString dom, fam, mem, att, facility, proto;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    QStringList sl = name.split('/', Qt::SkipEmptyParts);
+#else
     QStringList sl = name.split('/', QString::SkipEmptyParts);
+#endif
     for(int i = 0; i < sl.size(); i++)
     {
         QString pt = sl.at(i);
