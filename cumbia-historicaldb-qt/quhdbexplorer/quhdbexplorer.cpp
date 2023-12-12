@@ -193,7 +193,7 @@ void QuHdbExplorer::get() {
     QDateTime t1 = findChild<QDateTimeEdit *>("dte1")->dateTime();
     QDateTime t2 = findChild<QDateTimeEdit *>("dte2")->dateTime();
     QString t = findChild<QLineEdit *>("lesrc")->text();
-    QStringList srcs = t.trimmed().split(QRegExp("\\s+"));
+    QStringList srcs = t.trimmed().split(QRegularExpression("\\s+"));
     QStringList live;
 
     for(int i = 0; i < srcs.size(); i++) {
