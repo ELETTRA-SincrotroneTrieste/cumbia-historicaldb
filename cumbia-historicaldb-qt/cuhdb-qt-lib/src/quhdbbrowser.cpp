@@ -162,23 +162,20 @@ void QuHdbBrowser::dragEnterEvent(QDragEnterEvent *event)
         event->acceptProposedAction();
 }
 
-void QuHdbBrowser::dropEvent(QDropEvent *event)
-{
+void QuHdbBrowser::dropEvent(QDropEvent *event) {
     qDebug() << __FUNCTION__ << event->mimeData()->formats();
     const QMimeData *mimeData = event->mimeData();
-    if(mimeData->hasText())
-    {
-        QRegExp rx("([a-zA-z0-9_\\-\\.]+/[a-zA-z0-9_\\-\\.]+/[a-zA-z0-9_\\-\\.]+/[a-zA-z0-9_\\-\\.]+)");
+    if(mimeData->hasText())  {
+        QRegularExpression rx("([a-zA-z0-9_\\-\\.]+/[a-zA-z0-9_\\-\\.]+/[a-zA-z0-9_\\-\\.]+/[a-zA-z0-9_\\-\\.]+)");
         QString txt = mimeData->text();
         QStringList list;
         qDebug() << __FUNCTION__ << txt << "cntains rx " << txt.contains(rx);
-        if(txt.contains(rx))
-        {
+        if(txt.contains(rx)) {
             int pos = 0;
-            while ((pos = rx.indexIn(txt, pos)) != -1)
-            {
-                list << rx.cap(1);
-                pos += rx.matchedLength();
+            QRegularExpressionMatch ma = rx.match(txt, pos);
+            while (ma.hasMatch()) {
+                list << ma.captured(1);
+                pos = ma.capturedEnd(1);
             }
         }
         foreach(QString src, list)
@@ -190,14 +187,14 @@ void QuHdbBrowser::dropEvent(QDropEvent *event)
 QStringList QuHdbBrowser::selectedSources() const
 {
     QStringList srcs;
-    foreach(QTreeWidgetItem *it, selectedItems())
-    {
+    foreach(QTreeWidgetItem *it, selectedItems()) {
         QString src = it->data(0, Qt::UserRole).toString();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+        if(src.split('/', Qt::SkipEmptyParts).size() == level(it))
+#else
         if(src.split('/', QString::SkipEmptyParts).size() == level(it))
+#endif
             srcs << src;
-        else
-            qDebug() << __FUNCTION__ << "cant add" << src << " Cuz" <<
-                        src.split('/', QString::SkipEmptyParts).size() << "!=" << level(it) << it->text(0);
     }
 
     return srcs;
